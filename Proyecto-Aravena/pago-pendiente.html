@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pago en proceso — Joyería Aravena</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ambar:  #f59e0b;
+      --ambar-d:#d97706;
+      --dorado: #c9a227;
+      --fondo:  #0d0d0d;
+      --fondo2: #161616;
+      --borde:  rgba(255,255,255,0.08);
+      --texto:  #f0ede8;
+      --suave:  #888;
+    }
+    body {
+      background: var(--fondo);
+      color: var(--texto);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--fondo2);
+      border: 1px solid var(--borde);
+      border-radius: 24px;
+      padding: 52px 44px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,158,11,0.1);
+      animation: aparecer 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes aparecer {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .icono-wrap {
+      width: 96px; height: 96px;
+      background: rgba(245,158,11,0.1);
+      border: 2px solid rgba(245,158,11,0.35);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+    }
+    .reloj {
+      font-size: 3rem;
+      animation: tick 1.5s steps(1) infinite;
+    }
+    @keyframes tick {
+      0%  { content: '🕐'; } 8% { content:'🕑'; } 17%{ content:'🕒'; }
+      25% { content:'🕓'; } 33%{ content:'🕔'; } 42%{ content:'🕕'; }
+      50% { content:'🕖'; } 58%{ content:'🕗'; } 67%{ content:'🕘'; }
+      75% { content:'🕙'; } 83%{ content:'🕚'; } 92%{ content:'🕛'; }
+    }
+    .titulo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #fff, var(--ambar));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitulo {
+      color: var(--suave);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+    .info-box {
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 28px;
+      text-align: left;
+      font-size: 0.85rem;
+      color: var(--suave);
+      line-height: 1.7;
+    }
+    .info-box strong { color: var(--ambar); }
+    .acciones { display: flex; flex-direction: column; gap: 12px; }
+    .btn-principal {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 15px 24px;
+      background: linear-gradient(135deg, var(--ambar), var(--ambar-d));
+      color: #fff;
+      text-decoration: none;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.25s;
+      box-shadow: 0 0 24px rgba(245,158,11,0.3);
+    }
+    .btn-principal:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(245,158,11,0.5); }
+    .btn-wsp {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #25D366, #1aab52);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.25s;
+    }
+    .btn-wsp:hover { transform: translateY(-1px); }
+    .btn-secundario {
+      display: flex; align-items: center; justify-content: center;
+      padding: 14px 24px;
+      background: transparent;
+      color: var(--suave);
+      text-decoration: none;
+      border: 1px solid var(--borde);
+      border-radius: 999px;
+      font-size: 0.88rem;
+      transition: all 0.25s;
+    }
+    .btn-secundario:hover { border-color: rgba(255,255,255,0.25); color: var(--texto); }
+    .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--suave); margin-bottom: 32px; letter-spacing: 2px; }
+  </style>
+</head>
+<body>
+
+  <div class="logo">Joyería Aravena</div>
+
+  <div class="card">
+    <div class="icono-wrap">
+      <span class="reloj">⏳</span>
+    </div>
+
+    <h1 class="titulo">Pago en proceso</h1>
+    <p class="subtitulo">Tu pago está siendo procesado por MercadoPago. Esto puede tomar unos minutos.</p>
+
+    <div class="info-box">
+      <strong>¿Qué pasa ahora?</strong><br>
+      MercadoPago está verificando tu pago. Una vez confirmado, recibirás una notificación y tu pedido aparecerá en <em>Mis Pedidos</em>.<br><br>
+      Si tienes dudas, escríbenos por WhatsApp y te ayudamos de inmediato.
+    </div>
+
+    <div class="acciones">
+      <a href="perfil.html#pedidos" class="btn-principal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Ver mis pedidos
+      </a>
+      <a href="https://wa.me/56966497904?text=Hola!%20Realic%C3%A9%20un%20pago%20y%20est%C3%A1%20pendiente.%20%C2%BFPueden%20ayudarme%3F" target="_blank" class="btn-wsp">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M16 2C8.268 2 2 8.268 2 16c0 2.478.678 4.797 1.856 6.785L2 30l7.43-1.82A13.94 13.94 0 0 0 16 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm6.29 19.366c-.344-.172-2.036-1.004-2.352-1.118-.316-.116-.546-.172-.776.172-.23.344-.892 1.118-1.094 1.348-.2.23-.402.258-.746.086-.344-.172-1.452-.536-2.766-1.706-1.022-.912-1.712-2.036-1.912-2.38-.2-.344-.022-.53.15-.702.154-.154.344-.402.516-.602.172-.2.23-.344.344-.574.116-.23.058-.43-.028-.602-.086-.172-.776-1.87-1.064-2.562-.28-.674-.564-.582-.776-.594-.2-.01-.43-.012-.66-.012s-.602.086-.918.43c-.316.344-1.204 1.176-1.204 2.868s1.232 3.326 1.404 3.556c.172.23 2.426 3.706 5.878 5.198.822.354 1.464.566 1.964.724.826.262 1.578.226 2.172.138.662-.1 2.036-.832 2.322-1.634.288-.802.288-1.49.202-1.634-.086-.144-.316-.23-.66-.402z"/></svg>
+        Consultar por WhatsApp
+      </a>
+      <a href="index.html#catalogo" class="btn-secundario">← Volver al inicio</a>
+    </div>
+  </div>
+
+</body>
+</html>

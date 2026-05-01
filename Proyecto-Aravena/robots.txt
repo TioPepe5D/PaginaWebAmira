@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /perfil.html
+Disallow: /carrito.html
+Disallow: /api/
+
+Sitemap: https://joyasaravena.cl/sitemap.xml

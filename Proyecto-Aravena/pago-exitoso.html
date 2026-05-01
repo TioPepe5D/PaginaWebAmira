@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Pago exitoso! — Joyería Aravena</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --verde:   #10b981;
+      --verde-d: #059669;
+      --dorado:  #c9a227;
+      --fondo:   #0d0d0d;
+      --fondo2:  #161616;
+      --borde:   rgba(255,255,255,0.08);
+      --texto:   #f0ede8;
+      --suave:   #888;
+    }
+
+    body {
+      background: var(--fondo);
+      color: var(--texto);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* Partículas de fondo */
+    .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .particle {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      animation: caer linear infinite;
+      opacity: 0;
+    }
+    @keyframes caer {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--fondo2);
+      border: 1px solid var(--borde);
+      border-radius: 24px;
+      padding: 52px 44px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(16,185,129,0.12);
+      animation: aparecer 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes aparecer {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .icono-wrap {
+      width: 96px; height: 96px;
+      background: rgba(16,185,129,0.12);
+      border: 2px solid rgba(16,185,129,0.4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      animation: pulso 2.5s ease-in-out infinite;
+    }
+    @keyframes pulso {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.3); }
+      50%       { box-shadow: 0 0 0 16px rgba(16,185,129,0); }
+    }
+    .icono-check {
+      width: 48px; height: 48px;
+      stroke: var(--verde);
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 80;
+      stroke-dashoffset: 80;
+      animation: dibujar 0.7s 0.3s ease forwards;
+    }
+    @keyframes dibujar { to { stroke-dashoffset: 0; } }
+
+    .titulo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #fff, var(--verde));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitulo {
+      color: var(--suave);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .info-pedido {
+      background: rgba(16,185,129,0.06);
+      border: 1px solid rgba(16,185,129,0.15);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .info-pedido-fila {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 0.85rem;
+    }
+    .info-pedido-fila:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .info-pedido-fila span:first-child { color: var(--suave); }
+    .info-pedido-fila span:last-child  { font-weight: 600; color: var(--texto); }
+    .badge-pagado {
+      background: rgba(16,185,129,0.15);
+      color: var(--verde);
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .pasos {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+    .paso {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.83rem;
+      color: var(--suave);
+    }
+    .paso-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: rgba(201,162,39,0.15);
+      border: 1px solid rgba(201,162,39,0.3);
+      color: var(--dorado);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .acciones { display: flex; flex-direction: column; gap: 12px; }
+    .btn-principal {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 15px 24px;
+      background: linear-gradient(135deg, var(--verde), var(--verde-d));
+      color: #fff;
+      text-decoration: none;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.25s;
+      box-shadow: 0 0 24px rgba(16,185,129,0.3);
+    }
+    .btn-principal:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(16,185,129,0.5); }
+    .btn-secundario {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 24px;
+      background: transparent;
+      color: var(--suave);
+      text-decoration: none;
+      border: 1px solid var(--borde);
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: all 0.25s;
+    }
+    .btn-secundario:hover { border-color: rgba(255,255,255,0.25); color: var(--texto); }
+
+    .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--suave); margin-bottom: 32px; letter-spacing: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- Partículas de confetti -->
+  <div class="particles" id="particles"></div>
+
+  <div class="logo">Joyería Aravena</div>
+
+  <div class="card">
+    <div class="icono-wrap">
+      <svg class="icono-check" viewBox="0 0 52 52">
+        <path d="M14 26 L22 34 L38 18"/>
+      </svg>
+    </div>
+
+    <h1 class="titulo">¡Pago exitoso!</h1>
+    <p class="subtitulo">Tu pedido ha sido confirmado. Gracias por confiar en Joyería Aravena.</p>
+
+    <div class="info-pedido" id="info-pedido">
+      <div class="info-pedido-fila">
+        <span>Estado</span>
+        <span><span class="badge-pagado">✓ Pagado</span></span>
+      </div>
+      <div class="info-pedido-fila" id="fila-fecha">
+        <span>Fecha</span>
+        <span id="val-fecha">—</span>
+      </div>
+    </div>
+
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-num">1</div>
+        <span>Recibirás confirmación por WhatsApp pronto</span>
+      </div>
+      <div class="paso">
+        <div class="paso-num">2</div>
+        <span>Coordinaremos el despacho a tu dirección</span>
+      </div>
+      <div class="paso">
+        <div class="paso-num">3</div>
+        <span>Seguimiento en "Mis Pedidos" de tu perfil</span>
+      </div>
+    </div>
+
+    <div class="acciones">
+      <a href="perfil.html#pedidos" class="btn-principal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Ver mis pedidos
+      </a>
+      <a href="index.html#catalogo" class="btn-secundario">
+        ← Seguir comprando
+      </a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    // Mostrar fecha actual
+    document.getElementById('val-fecha').textContent =
+      new Date().toLocaleDateString('es-CL', { day:'2-digit', month:'long', year:'numeric' });
+
+    // Actualizar estado del pedido en Supabase
+    (async () => {
+      const pedidoId = localStorage.getItem('pedido_pendiente_id');
+      if (!pedidoId || typeof db === 'undefined') return;
+      try {
+        const { data: { session } } = await db.auth.getSession();
+        if (session) {
+          await db.from('pedidos')
+            .update({ estado: 'pagado' })
+            .eq('id', pedidoId)
+            .eq('user_id', session.user.id);
+          localStorage.removeItem('pedido_pendiente_id');
+        }
+      } catch (e) { console.warn('No se pudo actualizar el pedido:', e); }
+    })();
+
+    // Vaciar carrito
+    localStorage.removeItem('carrito');
+
+    // Confetti
+    const colores = ['#10b981','#c9a227','#fff','#34d399','#fbbf24','#6ee7b7'];
+    const cont = document.getElementById('particles');
+    for (let i = 0; i < 60; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${Math.random()*100}%;
+        background: ${colores[Math.floor(Math.random()*colores.length)]};
+        width: ${4 + Math.random()*6}px;
+        height: ${4 + Math.random()*6}px;
+        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+        animation-duration: ${2.5 + Math.random()*3}s;
+        animation-delay: ${Math.random()*2}s;
+      `;
+      cont.appendChild(p);
+    }
+  </script>
+  <script src="js/presencia.js"></script>
+</body>
+</html>
