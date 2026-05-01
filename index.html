@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es" class="dark">
 
 <head>
   <meta charset="UTF-8">
@@ -11,7 +11,6 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://joyasaravena.cl/">
 
-  <!-- Open Graph / WhatsApp / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Joyería Aravena">
   <meta property="og:url" content="https://joyasaravena.cl/">
@@ -20,20 +19,104 @@
   <meta property="og:image" content="https://joyasaravena.cl/img/og.jpg">
   <meta property="og:locale" content="es_CL">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Joyería Aravena — Anillos, Collares y Pulseras en Chile">
   <meta name="twitter:description" content="Joyas en plata nacional SL 925, plata italiana y oro GoldFit 18K. Envío a todo Chile.">
   <meta name="twitter:image" content="https://joyasaravena.cl/img/og.jpg">
 
-  <link rel="stylesheet" href="css/styles.css?v=2">
-  <link rel="stylesheet" href="css/auth.css">
+  <!-- Tema oscuro/claro temprano (evita flash) -->
+  <script>
+    (function() {
+      const tema = localStorage.getItem("tema") || "dark";
+      if (tema === "light") document.documentElement.classList.remove("dark");
+      else document.documentElement.classList.add("dark");
+    })();
+  </script>
+
+  <!-- Tailwind v4 Browser CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Theme tokens (Tailwind v4 @theme) -->
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:is(.dark *), &:where(.dark, .dark *));
+    @theme {
+      --color-background: #f9f9f9;
+      --color-foreground: #202020;
+      --color-card: #fcfcfc;
+      --color-card-foreground: #202020;
+      --color-popover: #fcfcfc;
+      --color-popover-foreground: #202020;
+      --color-primary: #ffb7c5;
+      --color-primary-foreground: #ffffff;
+      --color-secondary: #f4c2c2;
+      --color-secondary-foreground: #000000;
+      --color-muted: #efefef;
+      --color-muted-foreground: #646464;
+      --color-accent: #e8e8e8;
+      --color-accent-foreground: #202020;
+      --color-destructive: #e54d2e;
+      --color-destructive-foreground: #ffffff;
+      --color-border: #d8d8d8;
+      --color-input: #d8d8d8;
+      --color-ring: #644a40;
+      --font-sans: 'AR One Sans', ui-sans-serif, system-ui, sans-serif;
+      --font-serif: 'Adamina', ui-serif, serif;
+      --font-mono: 'Fragment Mono', ui-monospace, monospace;
+      --radius: 0.5rem;
+      --tracking-normal: 0.05em;
+    }
+    /* Variables para CSS plano (theme.css) */
+    :root {
+      --background: #f9f9f9;
+      --foreground: #202020;
+      --card: #fcfcfc;
+      --card-foreground: #202020;
+      --primary: #ffb7c5;
+      --primary-foreground: #ffffff;
+      --secondary: #f4c2c2;
+      --secondary-foreground: #000000;
+      --muted: #efefef;
+      --muted-foreground: #646464;
+      --accent: #e8e8e8;
+      --accent-foreground: #202020;
+      --destructive: #e54d2e;
+      --border: #d8d8d8;
+      --input: #d8d8d8;
+      --ring: #644a40;
+      --radius: 0.5rem;
+      --radius-md: calc(var(--radius) - 2px);
+      --shadow: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 1px 2px -1px hsl(0 0% 0% / .10);
+      --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 1px 2px -1px hsl(0 0% 0% / .10);
+      --shadow-md: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 2px 4px -1px hsl(0 0% 0% / .10);
+      --shadow-lg: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 4px 6px -1px hsl(0 0% 0% / .10);
+      --shadow-xl: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 8px 10px -1px hsl(0 0% 0% / .10);
+      --shadow-2xl: 0 1px 3px 0 hsl(0 0% 0% / .25);
+    }
+    .dark {
+      --background: #111111;
+      --foreground: #eeeeee;
+      --card: #191919;
+      --card-foreground: #eeeeee;
+      --primary: #ffb7c5;
+      --primary-foreground: #081a1b;
+      --secondary: #fff0f5;
+      --muted: #222222;
+      --muted-foreground: #b4b4b4;
+      --accent: #2a2a2a;
+      --accent-foreground: #eeeeee;
+      --border: #2a2a2a;
+      --input: #484848;
+      --ring: #ffe0c2;
+    }
+  </style>
+
+  <link rel="stylesheet" href="css/theme.css?v=1">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
-<body>
+<body class="bg-background text-foreground font-sans antialiased">
 
   <!-- JSON-LD: Datos estructurados para Google -->
   <script type="application/ld+json">
@@ -48,26 +131,8 @@
     "priceRange": "$$",
     "currenciesAccepted": "CLP",
     "paymentAccepted": "MercadoPago, Tarjeta de crédito, Débito",
-    "areaServed": {
-      "@type": "Country",
-      "name": "Chile"
-    },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": "customer service",
-      "availableLanguage": "Spanish"
-    },
-    "sameAs": [],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Catálogo de Joyas",
-      "itemListElement": [
-        { "@type": "OfferCatalog", "name": "Anillos" },
-        { "@type": "OfferCatalog", "name": "Collares" },
-        { "@type": "OfferCatalog", "name": "Pulseras" },
-        { "@type": "OfferCatalog", "name": "Aros" }
-      ]
-    }
+    "areaServed": { "@type": "Country", "name": "Chile" },
+    "contactPoint": { "@type": "ContactPoint", "contactType": "customer service", "availableLanguage": "Spanish" }
   }
   </script>
 
@@ -83,13 +148,12 @@
   <!-- HEADER -->
   <header class="header">
     <div class="header-container">
-
-<div class="logo">
+      <div class="logo">
         <a href="index.html" class="logo-texto">Joyería Aravena</a>
       </div>
 
       <div class="header-iconos">
-        <button class="icono-btn" id="tema-btn" title="Cambiar tema">
+        <button class="icono-btn" id="tema-btn" title="Cambiar tema" aria-label="Cambiar tema">
           <svg class="icono-luna" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
@@ -97,42 +161,41 @@
             <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
           </svg>
         </button>
-        <button class="icono-btn" id="snake-btn" title="Jugar Snake 🐍" onclick="abrirSnake()">
+        <button class="icono-btn" id="snake-btn" title="Jugar Snake 🐍" onclick="abrirSnake()" aria-label="Jugar Snake">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.5 2.8-1.3 3.8L18 14a2 2 0 0 1 0 2.8l-1.4 1.4a2 2 0 0 1-2.8 0L10 14.4l-1.5 1.5A4 4 0 1 1 5 12.5l1.5-1.5-3.8-3.7A2 2 0 0 1 2.7 4.5l1.4-1.4a2 2 0 0 1 2.8 0L10 6.4C11 5.5 12 4.5 12 3V2z"/>
           </svg>
         </button>
-        <button class="icono-btn" id="buscar-btn" title="Buscar">
+        <button class="icono-btn" id="buscar-btn" title="Buscar" aria-label="Buscar">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
         </button>
-        <button class="icono-btn" id="cuenta-btn" title="Mi cuenta">
+        <button class="icono-btn" id="cuenta-btn" title="Mi cuenta" aria-label="Mi cuenta">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" id="cuenta-icono">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
           </svg>
           <span class="cuenta-nombre-header" id="cuenta-nombre"></span>
         </button>
-        <button class="icono-btn carrito-btn" id="carrito-btn" title="Carrito">
+        <button class="icono-btn carrito-btn" id="carrito-btn" title="Carrito" aria-label="Carrito">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
           </svg>
           <span class="carrito-contador" id="carrito-contador">0</span>
         </button>
       </div>
-
     </div>
   </header>
 
-  <!-- BUSCADOR (oculto por defecto) -->
+  <!-- BUSCADOR -->
   <div class="buscador-overlay" id="buscador-overlay">
     <div class="buscador-container">
       <input type="text" id="buscador-input" placeholder="Buscar productos..." autocomplete="off">
-      <button id="buscador-cerrar">&#10005;</button>
+      <button id="buscador-cerrar" aria-label="Cerrar búsqueda">&#10005;</button>
     </div>
   </div>
 
-  <!-- HERO: banner de bienvenida -->
+  <!-- HERO -->
   <section class="hero" id="hero" data-parallax>
     <div class="hero-content animar">
       <h1>Joyería <span>Aravena</span></h1>
@@ -188,11 +251,10 @@
     </div>
   </section>
 
-  <!-- CATÁLOGO: sección de productos -->
+  <!-- CATÁLOGO -->
   <section class="catalogo" id="catalogo">
     <h2 id="catalogo-titulo" class="animar">Nuestra Colección</h2>
 
-    <!-- Selector de material (Nivel 1) -->
     <div class="materiales">
       <button class="material-btn activo" data-material="todos">✨ Todos</button>
       <button class="material-btn" data-material="plata-nacional">🪙 Plata Nacional SL 925</button>
@@ -201,7 +263,6 @@
       <button class="material-btn" data-material="accesorio">🗂 Insumos</button>
     </div>
 
-    <!-- Selector de subcategoría (Nivel 2 — aparece al elegir material) -->
     <div class="subcategorias" id="subcategorias">
       <button class="subcat-btn activo" data-subcat="todos">Todos</button>
       <button class="subcat-btn" data-subcat="collares">📿 Collares</button>
@@ -212,7 +273,6 @@
       <button class="subcat-btn" data-subcat="anillos">💍 Anillos</button>
     </div>
 
-    <!-- Filtro por precio y nombre (aparece al seleccionar categoría) -->
     <div class="filtro-barra" id="filtro-barra">
       <input type="text" id="filtro-nombre" placeholder="Buscar por nombre...">
       <select id="filtro-precio">
@@ -222,9 +282,7 @@
       </select>
     </div>
 
-    <!-- Aquí JavaScript inyecta las tarjetas de productos -->
     <div class="productos-grid" id="productos-grid"></div>
-
   </section>
 
   <!-- FOOTER -->
@@ -243,11 +301,7 @@
             <svg width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <radialGradient id="ig-grad" cx="30%" cy="107%" r="150%">
-                  <stop offset="0%" stop-color="#fdf497"/>
-                  <stop offset="5%" stop-color="#fdf497"/>
-                  <stop offset="45%" stop-color="#fd5949"/>
-                  <stop offset="60%" stop-color="#d6249f"/>
-                  <stop offset="90%" stop-color="#285AEB"/>
+                  <stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/>
                 </radialGradient>
               </defs>
               <rect width="32" height="32" rx="8" fill="url(#ig-grad)"/>
@@ -259,11 +313,8 @@
           <a href="https://www.tiktok.com/@joyasaravena" class="footer-red" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
             <svg width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
               <circle cx="16" cy="16" r="16" fill="#010101"/>
-              <!-- sombra cyan -->
               <path fill="#69C9D0" transform="translate(1,1)" d="M20.5 7.2a4.1 4.1 0 0 1-3.2-3.6V3h-2.9v11.6a2.45 2.45 0 1 1-1.7-2.34V9.3a5.35 5.35 0 1 0 4.6 5.3V9.9a6.95 6.95 0 0 0 4.07 1.3V8.3a4.12 4.12 0 0 1-.87-.1z"/>
-              <!-- sombra rosa -->
               <path fill="#EE1D52" transform="translate(-1,-1)" d="M20.5 7.2a4.1 4.1 0 0 1-3.2-3.6V3h-2.9v11.6a2.45 2.45 0 1 1-1.7-2.34V9.3a5.35 5.35 0 1 0 4.6 5.3V9.9a6.95 6.95 0 0 0 4.07 1.3V8.3a4.12 4.12 0 0 1-.87-.1z"/>
-              <!-- icono blanco principal -->
               <path fill="white" d="M20.5 7.2a4.1 4.1 0 0 1-3.2-3.6V3h-2.9v11.6a2.45 2.45 0 1 1-1.7-2.34V9.3a5.35 5.35 0 1 0 4.6 5.3V9.9a6.95 6.95 0 0 0 4.07 1.3V8.3a4.12 4.12 0 0 1-.87-.1z"/>
             </svg>
           </a>
@@ -285,10 +336,9 @@
     </div>
   </footer>
 
-
-  <!-- Botón WhatsApp flotante -->
+  <!-- WhatsApp flotante -->
   <a href="https://wa.me/56966497904?text=Hola,%20me%20interesa%20una%20joya%20de%20Joyería%20Aravena"
-    class="whatsapp-flotante" target="_blank" title="Escríbenos por WhatsApp">
+    class="whatsapp-flotante" target="_blank" title="Escríbenos por WhatsApp" aria-label="WhatsApp">
     <svg viewBox="0 0 32 32" width="28" height="28" fill="white" xmlns="http://www.w3.org/2000/svg">
       <path d="M16 2C8.268 2 2 8.268 2 16c0 2.478.678 4.797 1.856 6.785L2 30l7.43-1.82A13.94 13.94 0 0 0 16 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm0 25.5a11.44 11.44 0 0 1-5.826-1.594l-.418-.248-4.33 1.062 1.094-4.212-.272-.432A11.467 11.467 0 0 1 4.5 16C4.5 9.596 9.596 4.5 16 4.5S27.5 9.596 27.5 16 22.404 27.5 16 27.5zm6.29-8.634c-.344-.172-2.036-1.004-2.352-1.118-.316-.116-.546-.172-.776.172-.23.344-.892 1.118-1.094 1.348-.2.23-.402.258-.746.086-.344-.172-1.452-.536-2.766-1.706-1.022-.912-1.712-2.036-1.912-2.38-.2-.344-.022-.53.15-.702.154-.154.344-.402.516-.602.172-.2.23-.344.344-.574.116-.23.058-.43-.028-.602-.086-.172-.776-1.87-1.064-2.562-.28-.674-.564-.582-.776-.594-.2-.01-.43-.012-.66-.012s-.602.086-.918.43c-.316.344-1.204 1.176-1.204 2.868s1.232 3.326 1.404 3.556c.172.23 2.426 3.706 5.878 5.198.822.354 1.464.566 1.964.724.826.262 1.578.226 2.172.138.662-.1 2.036-.832 2.322-1.634.288-.802.288-1.49.202-1.634-.086-.144-.316-.23-.66-.402z"/>
     </svg>
@@ -297,15 +347,16 @@
   <!-- Panel detalle producto -->
   <div class="producto-detalle-overlay" id="producto-detalle-overlay"></div>
   <aside class="producto-detalle-panel" id="producto-detalle-panel">
-    <button class="producto-detalle-cerrar" id="producto-detalle-cerrar">&times;</button>
+    <button class="producto-detalle-cerrar" id="producto-detalle-cerrar" aria-label="Cerrar">&times;</button>
     <div class="producto-detalle-contenido" id="producto-detalle-contenido"></div>
   </aside>
 
+  <!-- Carrito -->
   <div class="carrito-overlay" id="carrito-overlay"></div>
   <aside class="carrito-panel" id="carrito-panel">
     <div class="carrito-header">
       <h3>Tu Carrito <span class="carrito-header-badge" id="carrito-header-badge">0</span></h3>
-      <button class="carrito-cerrar" id="carrito-cerrar">&times;</button>
+      <button class="carrito-cerrar" id="carrito-cerrar" aria-label="Cerrar carrito">&times;</button>
     </div>
     <div class="carrito-items" id="carrito-items">
       <p class="carrito-vacio">Tu carrito está vacío</p>
@@ -329,27 +380,17 @@
     </div>
   </aside>
 
-  <!-- Tema oscuro/claro -->
-  <script>
-    (function() {
-      const tema = localStorage.getItem("tema") || "dark";
-      if (tema === "light") document.documentElement.classList.add("light");
-    })();
-  </script>
-
-  <!-- AUTH: overlay + panel login/registro -->
+  <!-- AUTH -->
   <div class="auth-overlay" id="auth-overlay"></div>
-
   <aside class="auth-panel" id="auth-panel">
     <div class="auth-panel-header">
       <div class="auth-tabs">
         <button class="auth-tab activo" id="tab-login">Iniciar sesión</button>
         <button class="auth-tab" id="tab-registro">Crear cuenta</button>
       </div>
-      <button class="auth-panel-cerrar" id="auth-cerrar">&times;</button>
+      <button class="auth-panel-cerrar" id="auth-cerrar" aria-label="Cerrar">&times;</button>
     </div>
     <div class="auth-panel-body">
-      <!-- Login -->
       <form class="auth-form" id="form-login">
         <div class="auth-field">
           <label>Email</label>
@@ -359,7 +400,7 @@
           <label>Contraseña</label>
           <div class="auth-password-wrap">
             <input type="password" id="login-password" placeholder="••••••••" required>
-            <button type="button" class="auth-toggle-pass" title="Mostrar contraseña">
+            <button type="button" class="auth-toggle-pass" title="Mostrar contraseña" aria-label="Mostrar contraseña">
               <svg class="ojo-abierto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               <svg class="ojo-cerrado" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
             </button>
@@ -369,7 +410,6 @@
         <button type="submit" class="btn-primary auth-btn-submit" id="btn-login-submit">Iniciar sesión</button>
         <p class="auth-switch">¿No tienes cuenta? <button type="button" onclick="cambiarTab('registro')">Crear cuenta</button></p>
       </form>
-      <!-- Registro -->
       <form class="auth-form" id="form-registro" style="display:none">
         <div class="auth-field">
           <label>Nombre completo</label>
@@ -383,7 +423,7 @@
           <label>Contraseña</label>
           <div class="auth-password-wrap">
             <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required>
-            <button type="button" class="auth-toggle-pass" title="Mostrar contraseña">
+            <button type="button" class="auth-toggle-pass" title="Mostrar contraseña" aria-label="Mostrar contraseña">
               <svg class="ojo-abierto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               <svg class="ojo-cerrado" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
             </button>
@@ -396,7 +436,7 @@
     </div>
   </aside>
 
-  <!-- USUARIO: panel cuando está logueado -->
+  <!-- USUARIO -->
   <aside class="usuario-panel" id="usuario-panel">
     <div class="usuario-panel-header">
       <div class="usuario-info">
@@ -406,7 +446,7 @@
           <p class="usuario-email" id="panel-email">email@ejemplo.com</p>
         </div>
       </div>
-      <button class="auth-panel-cerrar" id="usuario-panel-cerrar">&times;</button>
+      <button class="auth-panel-cerrar" id="usuario-panel-cerrar" aria-label="Cerrar">&times;</button>
     </div>
     <nav class="usuario-nav">
       <a href="perfil.html#pedidos" class="usuario-nav-item">
@@ -442,29 +482,25 @@
   <div class="snake-modal-overlay" id="snake-modal">
     <div class="snake-modal-box">
       <div class="snake-header">
-        <div class="snake-title">
-          <span class="snake-diamond">◆</span> Colorful Snake
-        </div>
+        <div class="snake-title"><span class="snake-diamond">◆</span> Colorful Snake</div>
         <div class="snake-stats">
           <span>◆ <strong id="snake-score">0</strong> / 50</span>
           <span>🏆 <strong id="snake-hi">0</strong></span>
         </div>
-        <button class="snake-close-btn" onclick="cerrarSnake()" title="Cerrar">✕</button>
+        <button class="snake-close-btn" onclick="cerrarSnake()" title="Cerrar" aria-label="Cerrar">✕</button>
       </div>
-      <!-- Barra de progreso cupón -->
       <div class="snake-progress-wrap">
         <div class="snake-progress-bar" id="snake-progress-bar"></div>
         <span class="snake-progress-label">Junta 50 ◆ y gana un <strong>cupón de descuento</strong></span>
       </div>
       <canvas id="snake-canvas"></canvas>
-      <!-- D-Pad táctil -->
       <div class="snake-dpad">
-        <button id="dpad-up">▲</button>
+        <button id="dpad-up" aria-label="Arriba">▲</button>
         <div class="snake-dpad-mid">
-          <button id="dpad-left">◀</button>
-          <button id="dpad-right">▶</button>
+          <button id="dpad-left" aria-label="Izquierda">◀</button>
+          <button id="dpad-right" aria-label="Derecha">▶</button>
         </div>
-        <button id="dpad-down">▼</button>
+        <button id="dpad-down" aria-label="Abajo">▼</button>
       </div>
       <div class="snake-footer">
         <button class="snake-restart-btn" onclick="reiniciarSnake()">↺ Reiniciar</button>
@@ -485,19 +521,22 @@
   <script src="js/main.js"></script>
   <script src="js/snake.js"></script>
   <script>
+    // Toggle tema (usa .dark en <html> para alinear con Tailwind v4)
     document.getElementById("tema-btn").addEventListener("click", () => {
-      const esLight = document.documentElement.classList.toggle("light");
-      localStorage.setItem("tema", esLight ? "light" : "dark");
-      document.querySelector(".icono-luna").style.display = esLight ? "none" : "block";
-      document.querySelector(".icono-sol").style.display = esLight ? "block" : "none";
+      const root = document.documentElement;
+      const esDark = root.classList.toggle("dark");
+      localStorage.setItem("tema", esDark ? "dark" : "light");
+      document.querySelector(".icono-luna").style.display = esDark ? "block" : "none";
+      document.querySelector(".icono-sol").style.display = esDark ? "none" : "block";
     });
-    if (document.documentElement.classList.contains("light")) {
-      document.querySelector(".icono-luna").style.display = "none";
-      document.querySelector(".icono-sol").style.display = "block";
-    }
+    // Sync iniciales íconos sol/luna con el tema actual
+    (function syncTemaIconos(){
+      const esDark = document.documentElement.classList.contains("dark");
+      document.querySelector(".icono-luna").style.display = esDark ? "block" : "none";
+      document.querySelector(".icono-sol").style.display = esDark ? "none" : "block";
+    })();
   </script>
 
   <script src="js/presencia.js"></script>
 </body>
-
 </html>
