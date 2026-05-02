@@ -61,7 +61,7 @@
 
   /* ---------- Colores según tema ---------- */
   function isLight() {
-    return document.documentElement.classList.contains("light");
+    return !document.documentElement.classList.contains("dark");
   }
 
   function coloresEstrellas(alpha) {
