@@ -24,10 +24,8 @@ module.exports = async (req, res) => {
 
   const { tipo, pedidoId, total, items, email } = req.body || {};
 
-  const emoji   = tipo === "transferencia" ? "🏦" : "💳";
-  const metodo  = tipo === "transferencia"
-    ? "Transferencia Bancaria (pendiente confirmación)"
-    : "MercadoPago ✅";
+  const emoji  = "🏦";
+  const metodo = "Transferencia Bancaria (pendiente confirmación)";
 
   const resumenItems = Array.isArray(items) && items.length
     ? items.map(i => `• ${i.nombre} x${i.cantidad}`).join("\n")

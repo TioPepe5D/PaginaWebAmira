@@ -19,8 +19,7 @@
   },
   "homepage": "https://github.com/TioPepe5D/Proyecto-Aravena#readme",
   "dependencies": {
-    "@supabase/supabase-js": "^2.0.0",
-    "mercadopago": "^2.12.0"
+    "@supabase/supabase-js": "^2.0.0"
   },
   "devDependencies": {
     "sharp": "^0.34.5"

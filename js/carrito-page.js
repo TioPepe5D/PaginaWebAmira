@@ -99,19 +99,15 @@ function renderizarCarritoPage() {
 }
 
 function habilitarBotonPago() {
-  const btn   = document.getElementById("btn-pagar");
   const btnTr = document.getElementById("btn-transferencia");
-  if (btn)   btn.disabled   = carrito.length === 0;
   if (btnTr) btnTr.disabled = carrito.length === 0;
 }
 
 // ── Datos de envío temporales (guest checkout) ──
 let _datosEnvio = null;
-let _tipoPagoEnvio = null; // 'mp' | 'transferencia'
 
-function abrirFormularioEnvio(tipo) {
+function abrirFormularioEnvio() {
   if (carrito.length === 0) return;
-  _tipoPagoEnvio = tipo;
 
   // 1. Pre-rellenar desde localStorage (funciona para todos)
   const guardados = JSON.parse(localStorage.getItem('checkout_datos') || 'null');
@@ -202,64 +198,7 @@ function confirmarEnvioYPagar() {
   }
 
   cerrarFormularioEnvio();
-
-  if (_tipoPagoEnvio === 'mp') {
-    _iniciarPagoMP();
-  } else if (_tipoPagoEnvio === 'transferencia') {
-    _iniciarTransferencia();
-  }
-}
-
-async function _iniciarPagoMP() {
-  const btn = document.getElementById("btn-pagar");
-  const estado = document.getElementById("btn-mp-estado");
-  if (carrito.length === 0) return;
-
-  btn.disabled = true;
-  btn.textContent = "Procesando...";
-  if (estado) estado.textContent = "";
-
-  // Solo enviar id y quantity — el servidor calcula los precios reales
-  const items = carrito.map(i => ({
-    id:       String(i.id),
-    quantity: i.cantidad
-  }));
-
-  // Token de sesión para asociar el pedido al usuario (opcional)
-  let token = null;
-  try {
-    const { data: { session } } = await db.auth.getSession();
-    if (session) token = session.access_token;
-  } catch (_) {}
-
-  try {
-    const res = await fetch("/api/crear-preferencia", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { "Authorization": `Bearer ${token}` } : {})
-      },
-      body: JSON.stringify({ items, datosEnvio: _datosEnvio || null })
-    });
-
-    if (!res.ok) throw new Error("Error del servidor");
-
-    const data = await res.json();
-    if (data.pedidoId) localStorage.setItem('pedido_pendiente_id', data.pedidoId);
-    window.location.href = data.init_point;
-  } catch (err) {
-    if (estado) {
-      estado.textContent = "⚠ Error al conectar con MercadoPago. Intenta de nuevo.";
-      estado.style.color = "#dc2626";
-    }
-    btn.disabled = false;
-    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#009EE3"/><path d="M13 24c0-6.075 4.925-11 11-11s11 4.925 11 11-4.925 11-11 11S13 30.075 13 24z" fill="white"/><path d="M20 24l3 3 6-6" stroke="#009EE3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Pagar con MercadoPago`;
-  }
-}
-
-// Wrapper que abre el formulario de envío primero
-function iniciarPago() {
-  abrirFormularioEnvio('mp');
+  _iniciarTransferencia();
 }
 
 /* ── Guardar pedido vía API — solo {id, quantity}, precios calculados server-side ── */
@@ -295,74 +234,6 @@ async function guardarPedidoPendiente(estadoInicial = 'pendiente') {
     }
   } catch (e) {
     console.warn('[Pedidos] No se pudo guardar el pedido:', e);
-  }
-}
-
-/* ── Manejar retorno desde MercadoPago ────── */
-async function manejarRetornoPago() {
-  const params = new URLSearchParams(window.location.search);
-  const pago = params.get('pago');
-  if (!pago) return;
-
-  // Limpiar URL sin recargar la página
-  history.replaceState({}, '', window.location.pathname);
-
-  const pedidoId = localStorage.getItem('pedido_pendiente_id');
-
-  if (pago === 'ok') {
-    // Actualizar estado en Supabase
-    if (pedidoId && typeof db !== 'undefined' && db) {
-      try {
-        const { data: { session } } = await db.auth.getSession();
-        if (session) {
-          await db.from('pedidos')
-            .update({ estado: 'pagado' })
-            .eq('id', pedidoId)
-            .eq('user_id', session.user.id);
-          localStorage.removeItem('pedido_pendiente_id');
-        }
-      } catch (e) { console.warn('[Pedidos] Error al actualizar estado:', e); }
-    }
-
-    // Vaciar carrito
-    carrito = [];
-    guardarCarrito();
-    actualizarContador();
-    renderizarCarritoPage();
-    habilitarBotonPago();
-
-    mostrarBannerPago(
-      '¡Pago realizado con éxito! Gracias por tu compra, pronto te contactaremos.',
-      'ok',
-      'Ver mis pedidos →',
-      'perfil.html#pedidos'
-    );
-
-  } else if (pago === 'pendiente') {
-    mostrarBannerPago(
-      'Tu pago está siendo procesado. Te avisaremos cuando se confirme.',
-      'pendiente'
-    );
-
-  } else if (pago === 'error') {
-    // Marcar pedido como fallido
-    if (pedidoId && typeof db !== 'undefined' && db) {
-      try {
-        const { data: { session } } = await db.auth.getSession();
-        if (session) {
-          await db.from('pedidos')
-            .update({ estado: 'fallido' })
-            .eq('id', pedidoId)
-            .eq('user_id', session.user.id);
-          localStorage.removeItem('pedido_pendiente_id');
-        }
-      } catch (e) {}
-    }
-
-    mostrarBannerPago(
-      'Hubo un problema con el pago. Puedes intentarlo de nuevo.',
-      'error'
-    );
   }
 }
 
@@ -425,7 +296,7 @@ async function _iniciarTransferencia() {
 
 // Wrapper que abre formulario de envío primero
 function iniciarTransferencia() {
-  abrirFormularioEnvio('transferencia');
+  abrirFormularioEnvio();
 }
 
 function abrirModalTransferencia(total) {
@@ -507,7 +378,6 @@ function copiarDatosBancarios() {
 
 /* ── Configurar botones ── */
 function configurarPago() {
-  const btn   = document.getElementById("btn-pagar");
   const btnTr = document.getElementById("btn-transferencia");
   const btnCerrar        = document.getElementById("modal-transferencia-cerrar");
   const overlayTransf    = document.getElementById("modal-transferencia-overlay");
@@ -518,7 +388,6 @@ function configurarPago() {
   const btnCerrarEnvio   = document.getElementById("modal-envio-cerrar");
   const overlayEnvio     = document.getElementById("modal-envio-overlay");
 
-  if (btn)             btn.addEventListener("click", iniciarPago);
   if (btnTr)           btnTr.addEventListener("click", iniciarTransferencia);
   if (btnCerrar)       btnCerrar.addEventListener("click", cerrarModalTransferencia);
   if (overlayTransf)   overlayTransf.addEventListener("click", e => {

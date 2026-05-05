@@ -506,18 +506,11 @@ function verDetalle(pedidoId) {
         <p class="modal-info-valor">
           ${pedido.estado === 'transferencia_pendiente'
             ? '🏦 Transferencia bancaria'
-            : pedido.mp_payment_id
-              ? '💳 MercadoPago'
-              : pedido.estado === 'enviado' || pedido.estado === 'pagado'
-                ? '✓ Pagado'
-                : '—'}
+            : pedido.estado === 'enviado' || pedido.estado === 'pagado'
+              ? '✓ Pagado'
+              : '—'}
         </p>
       </div>
-      ${pedido.mp_payment_id ? `
-      <div class="modal-info-bloque">
-        <p class="modal-info-label">MercadoPago ID</p>
-        <p class="modal-info-valor mono">${pedido.mp_payment_id}</p>
-      </div>` : ''}
     </div>
 
     <!-- Datos de envío -->
@@ -608,7 +601,7 @@ function exportarCSV() {
     return;
   }
 
-  const headers = ['ID', 'Fecha', 'Email', 'User ID', 'Estado', 'Items', 'Total', 'MP Payment ID'];
+  const headers = ['ID', 'Fecha', 'Email', 'User ID', 'Estado', 'Items', 'Total'];
 
   const escape = (str) => {
     if (str == null) return '';
@@ -627,8 +620,7 @@ function exportarCSV() {
       p.user_id || '',
       p.estado,
       itemsStr,
-      p.total || 0,
-      p.mp_payment_id || ''
+      p.total || 0
     ].map(escape).join(',');
   });
 

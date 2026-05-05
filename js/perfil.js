@@ -150,10 +150,7 @@ function renderPedidoCard(p) {
   const idCorto = String(p.id).slice(0, 8).toUpperCase();
 
   // Método de pago
-  const esTransferencia = estado === 'transferencia_pendiente';
-  const metodoBadge = esTransferencia
-    ? `<span class="pedido-metodo pedido-metodo-transferencia">🏦 Transferencia</span>`
-    : `<span class="pedido-metodo pedido-metodo-mp">💳 MercadoPago</span>`;
+  const metodoBadge = `<span class="pedido-metodo pedido-metodo-transferencia">🏦 Transferencia</span>`;
 
   // Badge de estado
   const estadoTextos = {
