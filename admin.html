@@ -4,32 +4,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Joyería Aravena</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/auth.css">
+  <title>Admin — Ammira Store</title>
   <link rel="stylesheet" href="css/admin.css?v=3">
+  <script>
+    (function() {
+      const tema = localStorage.getItem("tema") || "light";
+      if (tema === "dark") document.documentElement.classList.add("dark");
+    })();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:is(.dark *), &:where(.dark, .dark *));
+    @theme {
+      --color-background: #f9f9f9; --color-foreground: #202020;
+      --color-card: #fcfcfc; --color-card-foreground: #202020;
+      --color-primary: #ffb7c5; --color-primary-foreground: #ffffff;
+      --color-secondary: #f4c2c2; --color-muted: #efefef;
+      --color-muted-foreground: #646464; --color-accent: #e8e8e8;
+      --color-border: #d8d8d8; --color-destructive: #e54d2e;
+      --color-destructive-foreground: #ffffff; --color-ring: #644a40;
+      --font-sans: 'AR One Sans', ui-sans-serif, system-ui, sans-serif;
+      --font-serif: 'Adamina', ui-serif, serif;
+      --radius: 0.5rem; --tracking-normal: 0.05em;
+    }
+    :root {
+      --background:#f9f9f9;--foreground:#202020;--card:#fcfcfc;--card-foreground:#202020;
+      --primary:#ffb7c5;--primary-foreground:#ffffff;--secondary:#f4c2c2;
+      --muted:#efefef;--muted-foreground:#646464;--accent:#e8e8e8;
+      --border:#d8d8d8;--destructive:#e54d2e;--destructive-foreground:#ffffff;
+      --ring:#644a40;--radius:0.5rem;--radius-md:calc(var(--radius) - 2px);
+      --shadow:0 1px 3px 0 hsl(0 0% 0%/.10),0 1px 2px -1px hsl(0 0% 0%/.10);
+      --shadow-md:0 1px 3px 0 hsl(0 0% 0%/.10),0 2px 4px -1px hsl(0 0% 0%/.10);
+      --shadow-lg:0 1px 3px 0 hsl(0 0% 0%/.10),0 4px 6px -1px hsl(0 0% 0%/.10);
+      --shadow-xl:0 1px 3px 0 hsl(0 0% 0%/.10),0 8px 10px -1px hsl(0 0% 0%/.10);
+      --shadow-2xl:0 1px 3px 0 hsl(0 0% 0%/.25);
+    }
+    .dark {
+      --background:#111111;--foreground:#eeeeee;--card:#191919;--card-foreground:#eeeeee;
+      --primary:#ffb7c5;--primary-foreground:#081a1b;--muted:#222222;
+      --muted-foreground:#b4b4b4;--accent:#2a2a2a;--border:#2a2a2a;--ring:#ffe0c2;
+    }
+  </style>
+
+  <link rel="stylesheet" href="css/theme.css?v=2">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
-<body>
+<body class="bg-background text-foreground font-sans antialiased">
 
   <script>
     (function () {
-      const tema = localStorage.getItem("tema") || "dark";
-      if (tema === "light") document.documentElement.classList.add("light");
+      const tema = localStorage.getItem("tema") || "light";
+      if (tema === "dark") document.documentElement.classList.add("dark");
     })();
   </script>
 
   <header class="header admin-header">
     <div class="header-container">
       <div class="logo">
-        <a href="index.html" class="logo-texto">Joyería Aravena</a>
+        <a href="index.html" class="logo-texto">Ammira Store</a>
         <span class="admin-badge">ADMIN</span>
       </div>
       <div class="header-iconos">
+        <button class="icono-btn" id="tema-btn" title="Cambiar tema" aria-label="Cambiar tema">
+          <svg class="icono-luna" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icono-sol" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
         <span id="admin-email" class="admin-email-display"></span>
         <button class="btn-logout-admin" id="btn-logout-admin">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -383,6 +427,22 @@
   <script src="js/products.js?v=3"></script>
   <script src="js/admin.js?v=3"></script>
 
+  <script>
+    const _temaBtn = document.getElementById("tema-btn");
+    if (_temaBtn) {
+      _temaBtn.addEventListener("click", () => {
+        const esDark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("tema", esDark ? "dark" : "light");
+        document.querySelector(".icono-luna").style.display = esDark ? "block" : "none";
+        document.querySelector(".icono-sol").style.display  = esDark ? "none"  : "block";
+      });
+      (function syncIconos(){
+        const esDark = document.documentElement.classList.contains("dark");
+        document.querySelector(".icono-luna").style.display = esDark ? "block" : "none";
+        document.querySelector(".icono-sol").style.display  = esDark ? "none"  : "block";
+      })();
+    }
+  </script>
 </body>
 
 </html>
