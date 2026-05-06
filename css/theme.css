@@ -72,16 +72,19 @@ button { font-family: inherit; cursor: pointer; }
   background: color-mix(in srgb, var(--background) 96%, transparent);
 }
 .header-container {
-  max-width: 1280px; margin: 0 auto;
+  width: 100%;
   padding: 18px 32px;
   position: relative;
-  display: flex; align-items: center; justify-content: flex-end;
+  display: flex; align-items: center;
 }
 .header-container .logo {
   position: absolute;
   left: 50%; transform: translateX(-50%);
 }
-.header-container .header-iconos { display: flex; align-items: center; gap: 4px; }
+.header-container .header-iconos {
+  display: flex; align-items: center; gap: 4px;
+  margin-left: auto;
+}
 .logo-texto {
   font-family: 'Adamina', serif;
   font-size: 1.4rem;
