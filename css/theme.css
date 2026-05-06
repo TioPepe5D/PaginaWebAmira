@@ -74,13 +74,14 @@ button { font-family: inherit; cursor: pointer; }
 .header-container {
   max-width: 1280px; margin: 0 auto;
   padding: 18px 32px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 24px;
+  position: relative;
+  display: flex; align-items: center; justify-content: flex-end;
 }
-.header-container .logo { justify-self: center; }
-.header-container .header-iconos { justify-self: end; }
+.header-container .logo {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+}
+.header-container .header-iconos { display: flex; align-items: center; gap: 4px; }
 .logo-texto {
   font-family: 'Adamina', serif;
   font-size: 1.4rem;
