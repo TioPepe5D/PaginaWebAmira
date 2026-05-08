@@ -97,7 +97,7 @@ function actualizarHeaderUsuario(user) {
       nombreEl.style.display = 'flex';
     }
     // Mostrar acceso rápido al admin si es administrador
-    mostrarBtnAdmin(ADMIN_EMAILS_AUTH.includes(user.email));
+    mostrarBtnAdmin(ADMIN_EMAILS_AUTH.some(a => a.toLowerCase() === (user.email || '').toLowerCase()));
   } else {
     btn.classList.remove('cuenta-activa');
     btn.title = 'Mi cuenta';

@@ -36,7 +36,7 @@ async function inicializar() {
 
     const email = session.user.email;
 
-    if (!ADMIN_EMAILS.includes(email)) {
+    if (!ADMIN_EMAILS.some(a => a.toLowerCase() === (email || '').toLowerCase())) {
       mostrarDenegado();
       return;
     }
