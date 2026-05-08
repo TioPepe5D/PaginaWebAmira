@@ -953,6 +953,35 @@ button { font-family: inherit; cursor: pointer; }
 .modal-confirm-si { background: var(--destructive); color: var(--destructive-foreground); }
 .modal-confirm-no { background: var(--muted); color: var(--foreground); }
 
+/* Modal panel genérico (envío, etc.) */
+.modal-panel-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-panel-overlay.activo { display: flex; }
+.modal-panel {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 0;
+  max-width: 480px; width: 100%;
+  box-shadow: var(--shadow-2xl); overflow: hidden;
+}
+.modal-panel-header {
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-panel-titulo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 600; font-size: 1rem;
+}
+.modal-panel-cerrar {
+  background: var(--muted); border: none; color: var(--foreground);
+  width: 32px; height: 32px; border-radius: 999px; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s, transform .2s; cursor: pointer;
+}
+.modal-panel-cerrar:hover { background: var(--accent); transform: rotate(90deg); }
+
 /* Modal Envío */
 .modal-envio { max-width: 560px; max-height: 92dvh; overflow-y: auto; }
 .modal-envio-subtitulo { color: var(--muted-foreground); font-size: .88rem; padding: 12px 24px 0; margin: 0; }
