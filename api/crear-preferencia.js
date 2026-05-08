@@ -107,7 +107,7 @@ module.exports = async (req, res) => {
           pending: `${siteUrl}/pago-pendiente.html`
         },
         auto_return:          "approved",
-        statement_descriptor: "Joyería Aravena",
+        statement_descriptor: "Ammira Store",
         external_reference:   String(pedido.id),
         notification_url:     `${vercelUrl}/api/mp-webhook`
       }
