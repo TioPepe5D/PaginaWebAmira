@@ -140,6 +140,7 @@ function abrirDetalleProducto(id) {
       <p class="detalle-categoria">${producto.categoria}</p>
       <h2 class="detalle-nombre">${producto.nombre}</h2>
       <p class="detalle-precio">${producto.precio > 0 ? '$' + producto.precio.toLocaleString("es-CL") + ' CLP' : '<span class="precio-consultar">Consultar precio</span>'}</p>
+      <div class="detalle-divider"></div>
       <p class="detalle-descripcion">${producto.descripcion}</p>
       <div class="detalle-cantidad-wrap">
         <span class="detalle-cantidad-label">Cantidad</span>

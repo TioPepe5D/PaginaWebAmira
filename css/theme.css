@@ -555,8 +555,200 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ---------- PRODUCTO DETALLE PANEL ---------- */
 .producto-detalle-panel { max-width: 540px; }
-.producto-detalle-contenido { padding: 32px; flex: 1; overflow-y: auto; }
-.producto-detalle-contenido img { width: 100%; border-radius: var(--radius); margin-bottom: 20px; background: var(--muted); }
+.producto-detalle-contenido {
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Image hero */
+.detalle-imagen {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+  background: var(--muted);
+}
+
+/* Info section */
+.detalle-info {
+  padding: 28px 28px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.detalle-categoria {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin: 0 0 8px;
+}
+
+.detalle-nombre {
+  font-family: 'Adamina', serif;
+  font-weight: 400;
+  font-size: 1.55rem;
+  line-height: 1.25;
+  color: var(--foreground);
+  margin: 0 0 14px;
+}
+
+.detalle-precio {
+  font-family: 'Adamina', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--primary);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.precio-consultar {
+  font-size: 1rem;
+  font-family: 'AR One Sans', sans-serif;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+/* Divider */
+.detalle-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0 16px;
+}
+
+.detalle-descripcion {
+  font-size: .9rem;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+  margin: 0 0 20px;
+}
+
+/* Quantity selector */
+.detalle-cantidad-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.detalle-cantidad-label {
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  letter-spacing: .04em;
+}
+.cantidad-selector {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--muted);
+}
+.cantidad-selector button {
+  width: 36px; height: 36px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--foreground);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.cantidad-selector button:hover { background: var(--border); }
+.cantidad-valor {
+  min-width: 32px;
+  text-align: center;
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+/* Action buttons */
+.detalle-acciones {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.btn-detalle-agregar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius);
+  padding: 13px 20px;
+  font-size: .88rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s;
+}
+.btn-detalle-agregar:hover { opacity: .88; transform: translateY(-1px); }
+.btn-detalle-agregar:active { transform: translateY(0); }
+
+.btn-detalle-favorito {
+  width: 46px; height: 46px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.btn-detalle-favorito:hover, .btn-detalle-favorito.favorito-activo {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* WhatsApp button */
+.btn-detalle-wsp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  background: color-mix(in srgb, #25D366 14%, transparent);
+  color: #16a34a;
+  border: 1px solid color-mix(in srgb, #25D366 40%, transparent);
+  border-radius: var(--radius);
+  font-size: .86rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .2s;
+  margin-bottom: 18px;
+}
+.btn-detalle-wsp:hover { background: color-mix(in srgb, #25D366 22%, transparent); }
+
+/* Trust badges */
+.detalle-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.detalle-badges span {
+  font-size: .75rem;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--muted-foreground);
+}
+
+/* Legacy selectors kept for safety */
 .producto-detalle-contenido h2 { font-family: 'Adamina', serif; font-weight: 400; font-size: 1.6rem; margin: 0 0 6px; }
 .producto-detalle-contenido .precio { font-family: 'Adamina', serif; color: var(--primary); font-size: 1.6rem; margin: 12px 0; }
 
