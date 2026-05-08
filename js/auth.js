@@ -77,7 +77,7 @@ function initAuth() {
   });
 }
 
-const ADMIN_EMAILS_AUTH = ['diegoaravenavera@gmail.com'];
+const ADMIN_EMAILS_AUTH = ['Valentina.belen1905@gmail.com'];
 
 /* ── Header ──────────────────────────────── */
 function actualizarHeaderUsuario(user) {
