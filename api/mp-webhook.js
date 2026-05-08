@@ -17,7 +17,7 @@ async function enviarNotifWhatsApp({ tipo, pedidoId, total, items, email }) {
     : "Sin detalle";
 
   const mensaje =
-    `🔔 NUEVO PEDIDO — Joyería Aravena\n\n` +
+    `🔔 NUEVO PEDIDO — Ammira Store\n\n` +
     `${emoji} Método: ${metodo}\n` +
     `📦 ID: ${pedidoId || "N/A"}\n` +
     `💰 Total: $${Number(total).toLocaleString("es-CL")} CLP\n` +
