@@ -157,6 +157,111 @@ function cerrarFormularioEnvio() {
   document.getElementById('modal-envio-overlay').classList.remove('activo');
 }
 
+/* ── RUT helpers ── */
+function _rutDigito(rut) {
+  let suma = 0, mul = 2;
+  for (let i = String(rut).length - 1; i >= 0; i--) {
+    suma += parseInt(String(rut)[i]) * mul;
+    mul = mul === 7 ? 2 : mul + 1;
+  }
+  const r = 11 - (suma % 11);
+  return r === 11 ? '0' : r === 10 ? 'K' : String(r);
+}
+function _rutValido(raw) {
+  const clean = raw.replace(/[\.\-\s]/g, '').toUpperCase();
+  if (clean.length < 2) return false;
+  const cuerpo = clean.slice(0, -1);
+  const dv = clean.slice(-1);
+  if (!/^\d+$/.test(cuerpo)) return false;
+  return _rutDigito(cuerpo) === dv;
+}
+function _formatearRut(val) {
+  let clean = val.replace(/[^0-9kK]/g, '').toUpperCase();
+  if (clean.length === 0) return '';
+  const dv = clean.slice(-1);
+  let cuerpo = clean.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return clean.length === 1 ? clean : `${cuerpo}-${dv}`;
+}
+
+/* ── Field validation ── */
+function _setField(id, msgId, ok, msg) {
+  const el = document.getElementById(id);
+  const m  = document.getElementById(msgId);
+  el.classList.toggle('campo-ok',    ok);
+  el.classList.toggle('campo-error', !ok);
+  if (m) { m.textContent = ok ? '' : msg; m.classList.toggle('visible', !ok); }
+  return ok;
+}
+function _validarNombre(v)   { return /^[A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]{3,60}$/.test(v); }
+function _validarTelefono(v) { return /^[\d\+\s]{8,15}$/.test(v); }
+function _validarCiudad(v)   { return /^[A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]{3,40}$/.test(v); }
+function _validarCorreo(v)   { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) && v.length <= 80; }
+
+function _adjuntarValidaciones() {
+  const nombre   = document.getElementById('env-nombre-pago');
+  const telefono = document.getElementById('env-telefono-pago');
+  const rut      = document.getElementById('env-rut-pago');
+  const ciudad   = document.getElementById('env-ciudad-pago');
+  const correo   = document.getElementById('env-correo-pago');
+  const domicilio= document.getElementById('env-domicilio-pago');
+  const sucursal = document.getElementById('env-sucursal-pago');
+  const pref     = document.getElementById('env-preferencia-pago');
+
+  // Bloqueo en tiempo real — solo letras/espacios
+  nombre.addEventListener('input', () => {
+    nombre.value = nombre.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+    if (nombre.value.length > 0)
+      _setField('env-nombre-pago','msg-nombre', _validarNombre(nombre.value.trim()), 'Mínimo 3 letras, solo letras y espacios');
+  });
+  nombre.addEventListener('blur', () =>
+    _setField('env-nombre-pago','msg-nombre', _validarNombre(nombre.value.trim()), 'Mínimo 3 letras, solo letras y espacios'));
+
+  // Bloqueo teléfono
+  telefono.addEventListener('input', () => {
+    telefono.value = telefono.value.replace(/[^\d\+\s]/g, '');
+    if (telefono.value.length > 0)
+      _setField('env-telefono-pago','msg-telefono', _validarTelefono(telefono.value.trim()), '8–15 dígitos, puede incluir + y espacios');
+  });
+  telefono.addEventListener('blur', () =>
+    _setField('env-telefono-pago','msg-telefono', _validarTelefono(telefono.value.trim()), '8–15 dígitos, puede incluir + y espacios'));
+
+  // RUT: formateo automático + validación DV
+  rut.addEventListener('input', () => {
+    const pos = rut.selectionStart;
+    rut.value = _formatearRut(rut.value);
+    if (rut.value.length > 0)
+      _setField('env-rut-pago','msg-rut', _rutValido(rut.value), 'RUT inválido (dígito verificador incorrecto)');
+  });
+  rut.addEventListener('blur', () =>
+    _setField('env-rut-pago','msg-rut', _rutValido(rut.value), 'RUT inválido (dígito verificador incorrecto)'));
+
+  // Ciudad — solo letras/espacios
+  ciudad.addEventListener('input', () => {
+    ciudad.value = ciudad.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+    if (ciudad.value.length > 0)
+      _setField('env-ciudad-pago','msg-ciudad', _validarCiudad(ciudad.value.trim()), 'Mínimo 3 letras, solo letras y espacios');
+  });
+  ciudad.addEventListener('blur', () =>
+    _setField('env-ciudad-pago','msg-ciudad', _validarCiudad(ciudad.value.trim()), 'Mínimo 3 letras, solo letras y espacios'));
+
+  // Correo
+  correo.addEventListener('blur', () =>
+    _setField('env-correo-pago','msg-correo', _validarCorreo(correo.value.trim()), 'Ingresa un correo válido'));
+
+  // Domicilio/Sucursal — obligatorio según preferencia
+  function _validarCondicionales() {
+    const esDomicilio = pref.value === 'Domicilio';
+    const esSucursal  = pref.value === 'Sucursal';
+    if (domicilio.value.trim() || esDomicilio)
+      _setField('env-domicilio-pago','msg-domicilio', !esDomicilio || domicilio.value.trim().length > 0, 'Ingresa tu domicilio para envío a domicilio');
+    if (sucursal.value.trim() || esSucursal)
+      _setField('env-sucursal-pago','msg-sucursal', !esSucursal || sucursal.value.trim().length > 0, 'Ingresa la sucursal más cercana');
+  }
+  pref.addEventListener('change', _validarCondicionales);
+  domicilio.addEventListener('blur', _validarCondicionales);
+  sucursal.addEventListener('blur', _validarCondicionales);
+}
+
 function confirmarEnvioYPagar() {
   const nombre    = document.getElementById('env-nombre-pago').value.trim();
   const telefono  = document.getElementById('env-telefono-pago').value.trim();
@@ -168,9 +273,22 @@ function confirmarEnvioYPagar() {
   const sucursal  = document.getElementById('env-sucursal-pago').value.trim();
   const domicilio = document.getElementById('env-domicilio-pago').value.trim();
 
+  // Validate all fields at submit time
   const errEl = document.getElementById('env-form-error');
-  if (!nombre || !telefono || !rut || !ciudad || !correo || !empresa) {
-    errEl.textContent = 'Por favor completa todos los campos obligatorios (*)';
+  let ok = true;
+  if (!_setField('env-nombre-pago',   'msg-nombre',   _validarNombre(nombre),     'Mínimo 3 letras, solo letras y espacios')) ok = false;
+  if (!_setField('env-telefono-pago', 'msg-telefono', _validarTelefono(telefono), '8–15 dígitos, puede incluir + y espacios')) ok = false;
+  if (!_setField('env-rut-pago',      'msg-rut',      _rutValido(rut),            'RUT inválido (dígito verificador incorrecto)')) ok = false;
+  if (!_setField('env-ciudad-pago',   'msg-ciudad',   _validarCiudad(ciudad),     'Mínimo 3 letras, solo letras y espacios')) ok = false;
+  if (!_setField('env-correo-pago',   'msg-correo',   _validarCorreo(correo),     'Ingresa un correo válido')) ok = false;
+  if (!empresa) ok = false;
+  if (preferencia === 'Domicilio' && !domicilio)
+    { _setField('env-domicilio-pago','msg-domicilio', false, 'Ingresa tu domicilio para envío a domicilio'); ok = false; }
+  if (preferencia === 'Sucursal' && !sucursal)
+    { _setField('env-sucursal-pago','msg-sucursal', false, 'Ingresa la sucursal más cercana'); ok = false; }
+
+  if (!ok) {
+    errEl.textContent = 'Corrige los campos marcados en rojo';
     errEl.style.display = 'block';
     return;
   }
@@ -393,6 +511,8 @@ function configurarPago() {
   const overlayEnvio   = document.getElementById("modal-envio-overlay");
 
   if (btn) btn.addEventListener("click", iniciarPago);
+
+  _adjuntarValidaciones();
 
   if (btnConfEnvio) btnConfEnvio.addEventListener("click", confirmarEnvioYPagar);
   if (btnCerrarEnvio)  btnCerrarEnvio.addEventListener("click", cerrarFormularioEnvio);

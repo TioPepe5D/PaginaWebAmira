@@ -1002,6 +1002,23 @@ button { font-family: inherit; cursor: pointer; }
 }
 .envio-form-error { color: var(--destructive); font-size: .82rem; margin: 8px 0; }
 
+/* Validation states */
+.envio-field input.campo-ok, .envio-field select.campo-ok {
+  border-color: #16a34a;
+}
+.envio-field input.campo-error, .envio-field select.campo-error {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 18%, transparent);
+}
+.envio-field .campo-msg {
+  font-size: .72rem;
+  margin-top: 2px;
+  min-height: 1em;
+  color: var(--destructive);
+  display: none;
+}
+.envio-field .campo-msg.visible { display: block; }
+
 /* ---------- RESPONSIVE carrito ---------- */
 @media (max-width: 900px) {
   .carrito-page-grid { grid-template-columns: 1fr; }
