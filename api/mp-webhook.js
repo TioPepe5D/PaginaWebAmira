@@ -4,7 +4,7 @@ const { createClient } = require("@supabase/supabase-js");
 /* ── Helper: notificación WhatsApp via CallMeBot ── */
 async function enviarNotifWhatsApp({ tipo, pedidoId, total, items, email }) {
   const apiKey = process.env.CALLMEBOT_APIKEY;
-  const phone  = process.env.NOTIF_PHONE || "56966497904";
+  const phone  = process.env.NOTIF_PHONE || "56994813489";
   if (!apiKey) return;
 
   const emoji  = tipo === "transferencia" ? "🏦" : "💳";

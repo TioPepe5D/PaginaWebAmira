@@ -7,7 +7,7 @@
  *
  * Variables de entorno requeridas:
  *  CALLMEBOT_APIKEY  → clave que entrega CallMeBot al activar el servicio
- *  NOTIF_PHONE       → número destino con código de país, sin + (ej: 56966497904)
+ *  NOTIF_PHONE       → número destino con código de país, sin + (ej: 56994813489)
  */
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   }
 
   const apiKey = process.env.CALLMEBOT_APIKEY;
-  const phone  = process.env.NOTIF_PHONE || "56966497904";
+  const phone  = process.env.NOTIF_PHONE || "56994813489";
 
   if (!apiKey) {
     console.warn("[Notif] CALLMEBOT_APIKEY no configurado — notificación omitida");

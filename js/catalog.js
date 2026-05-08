@@ -132,7 +132,7 @@ function abrirDetalleProducto(id) {
   const msgWsp = encodeURIComponent(
     `Hola! Me interesa el *${producto.nombre}* (${precioTexto}). ¿Tiene disponibilidad?\n\n📸 ${imagenUrl}`
   );
-  const linkWsp = `https://wa.me/56966497904?text=${msgWsp}`;
+  const linkWsp = `https://wa.me/56994813489?text=${msgWsp}`;
 
   contenido.innerHTML = `
     <img src="${producto.imagen}" alt="${producto.nombre}" class="detalle-imagen">

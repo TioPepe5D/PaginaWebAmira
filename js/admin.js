@@ -1021,7 +1021,7 @@ function recalcular() {
 `\n\n✨ *Total: $${total.toLocaleString('es-CL')} CLP*\n   ($${precioReal.toLocaleString('es-CL')} c/u)`;
 
   document.getElementById('calc-btn-wsp').href =
-    'https://wa.me/56966497904?text=' + encodeURIComponent(msg);
+    'https://wa.me/56994813489?text=' + encodeURIComponent(msg);
   document.getElementById('calc-btn-copiar').dataset.texto = msg;
 }
 
