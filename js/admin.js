@@ -4,7 +4,8 @@
 
 // Emails con permisos de admin
 const ADMIN_EMAILS = [
-  'diegoaravenavera@gmail.com'
+  'diegoaravenavera@gmail.com',
+  'valentina.belen1905@gmail.com'
 ];
 
 let todosLosPedidos = [];
