@@ -99,15 +99,13 @@ function renderizarCarritoPage() {
 }
 
 function habilitarBotonPago() {
-  const btn   = document.getElementById("btn-pagar");
-  const btnTr = document.getElementById("btn-transferencia");
-  if (btn)   btn.disabled   = carrito.length === 0;
-  if (btnTr) btnTr.disabled = carrito.length === 0;
+  const btn = document.getElementById("btn-pagar");
+  if (btn) btn.disabled = carrito.length === 0;
 }
 
 // ── Datos de envío temporales (guest checkout) ──
 let _datosEnvio = null;
-let _tipoPagoEnvio = null; // 'mp' | 'transferencia'
+let _tipoPagoEnvio = null;
 
 function abrirFormularioEnvio(tipo) {
   if (carrito.length === 0) return;
@@ -205,8 +203,6 @@ function confirmarEnvioYPagar() {
 
   if (_tipoPagoEnvio === 'mp') {
     _iniciarPagoMP();
-  } else if (_tipoPagoEnvio === 'transferencia') {
-    _iniciarTransferencia();
   }
 }
 
@@ -386,147 +382,19 @@ function mostrarBannerPago(texto, tipo, linkTexto = '', linkUrl = '') {
    ══════════════════════════════════════════ */
 
 // ── Datos bancarios (actualizar con los datos reales) ──
-const DATOS_BANCO = {
-  banco:   'Banco de Chile',
-  nombre:  'Inversiones Aravena SpA',
-  rut:     '77.807.825-2',
-  tipo:    'Cuenta Corriente',
-  numero:  '00-801-77289-03',
-  email:   'diegoaravenavera@gmail.com'
-};
-
-async function _iniciarTransferencia() {
-  // 1. Calcular total
-  const subtotal = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
-  const comision = Math.round(subtotal * 0.05);
-  const total    = subtotal + comision;
-
-  // 2. Guardar pedido en Supabase si hay sesión (guest: se omite)
-  await guardarPedidoPendiente('transferencia_pendiente');
-
-  // 3. Notificar al dueño (silencioso)
-  try {
-    fetch('/api/notificar-pedido', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tipo:     'transferencia',
-        pedidoId: localStorage.getItem('pedido_pendiente_id') || '',
-        total,
-        items:    carrito.map(i => ({ nombre: i.nombre, cantidad: i.cantidad })),
-        datosEnvio: _datosEnvio || {}
-      })
-    });
-  } catch (_) {}
-
-  // 4. Mostrar modal con datos bancarios
-  abrirModalTransferencia(total);
-}
-
-// Wrapper que abre formulario de envío primero
-function iniciarTransferencia() {
-  abrirFormularioEnvio('transferencia');
-}
-
-function abrirModalTransferencia(total) {
-  // Rellenar datos en el modal
-  document.getElementById('modal-total-valor').textContent =
-    '$' + total.toLocaleString('es-CL') + ' CLP';
-  document.getElementById('dato-banco').textContent  = DATOS_BANCO.banco;
-  document.getElementById('dato-nombre').textContent = DATOS_BANCO.nombre;
-  document.getElementById('dato-rut').textContent    = DATOS_BANCO.rut;
-  document.getElementById('dato-tipo').textContent   = DATOS_BANCO.tipo;
-  document.getElementById('dato-numero').textContent = DATOS_BANCO.numero;
-  document.getElementById('dato-email').textContent  = DATOS_BANCO.email;
-
-  // Link de WhatsApp con carrito + datos de envío (formato Diego)
-  const resumenItems = carrito.map(i => {
-    const imagenUrl = i.imagen
-      ? (i.imagen.startsWith('http') ? i.imagen : `https://joyasaravena.cl/${i.imagen.replace(/^\//, '')}`)
-      : '';
-    return `* $${i.precio.toLocaleString('es-CL')} | ${i.nombre} x${i.cantidad}` +
-           (imagenUrl ? `\n  📸 ${imagenUrl}` : '');
-  }).join('\n');
-
-  let msgEnvio = '';
-  if (_datosEnvio) {
-    const d = _datosEnvio;
-    msgEnvio =
-      `\n\nDATOS DE ENVÍO 🚚\n` +
-      `——————————————————\n` +
-      `* Empresa de Envío: ${d.empresa}\n` +
-      `* Nombre Completo: ${d.nombre}\n` +
-      `* Número De Teléfono: ${d.telefono}\n` +
-      `* RUT: ${d.rut}\n` +
-      `* Ciudad: ${d.ciudad}\n` +
-      `* Correo: ${d.correo}\n` +
-      `* Preferencia: ${d.preferencia}\n` +
-      (d.sucursal ? `* Sucursal Más Cercana: ${d.sucursal}\n` : '') +
-      (d.domicilio ? `* Domicilio: ${d.domicilio}\n` : '') +
-      `——————————————————`;
-  }
-
-  const msg = encodeURIComponent(
-    `CARRITO WEB 🌐\n${resumenItems}\nTotal: $${total.toLocaleString('es-CL')} CLP` +
-    msgEnvio +
-    `\n\nAdjunto el comprobante de transferencia.`
-  );
-  document.getElementById('btn-confirmar-transferencia').href =
-    `https://wa.me/56966497904?text=${msg}`;
-
-  // Abrir modal
-  document.getElementById('modal-transferencia-overlay')?.classList.add('activo');
-}
-
-function cerrarModalTransferencia() {
-  document.getElementById('modal-transferencia-overlay')?.classList.remove('activo');
-}
-
-function copiarDatosBancarios() {
-  const total = document.getElementById('modal-total-valor').textContent;
-  const texto =
-    `Datos de transferencia — Joyería Aravena\n` +
-    `Total: ${total}\n` +
-    `Banco: ${DATOS_BANCO.banco}\n` +
-    `Nombre: ${DATOS_BANCO.nombre}\n` +
-    `RUT: ${DATOS_BANCO.rut}\n` +
-    `Tipo de cuenta: ${DATOS_BANCO.tipo}\n` +
-    `N° de cuenta: ${DATOS_BANCO.numero}\n` +
-    `Email: ${DATOS_BANCO.email}`;
-  navigator.clipboard.writeText(texto).then(() => {
-    const btn = document.getElementById('btn-copiar-datos');
-    const orig = btn.innerHTML;
-    btn.innerHTML = '✓ ¡Copiado!';
-    btn.style.color = '#10b981';
-    btn.style.borderColor = '#10b981';
-    setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
-  }).catch(() => {
-    alert('No se pudo copiar. Por favor copia los datos manualmente.');
-  });
-}
 
 /* ── Configurar botones ── */
 function configurarPago() {
-  const btn   = document.getElementById("btn-pagar");
-  const btnTr = document.getElementById("btn-transferencia");
-  const btnCerrar        = document.getElementById("modal-transferencia-cerrar");
-  const overlayTransf    = document.getElementById("modal-transferencia-overlay");
-  const btnCopiar        = document.getElementById("btn-copiar-datos");
+  const btn = document.getElementById("btn-pagar");
 
   // Modal de envío
-  const btnConfEnvio     = document.getElementById("btn-confirmar-envio");
-  const btnCerrarEnvio   = document.getElementById("modal-envio-cerrar");
-  const overlayEnvio     = document.getElementById("modal-envio-overlay");
+  const btnConfEnvio   = document.getElementById("btn-confirmar-envio");
+  const btnCerrarEnvio = document.getElementById("modal-envio-cerrar");
+  const overlayEnvio   = document.getElementById("modal-envio-overlay");
 
-  if (btn)             btn.addEventListener("click", iniciarPago);
-  if (btnTr)           btnTr.addEventListener("click", iniciarTransferencia);
-  if (btnCerrar)       btnCerrar.addEventListener("click", cerrarModalTransferencia);
-  if (overlayTransf)   overlayTransf.addEventListener("click", e => {
-    if (e.target === overlayTransf) cerrarModalTransferencia();
-  });
-  if (btnCopiar)       btnCopiar.addEventListener("click", copiarDatosBancarios);
+  if (btn) btn.addEventListener("click", iniciarPago);
 
-  if (btnConfEnvio)    btnConfEnvio.addEventListener("click", confirmarEnvioYPagar);
+  if (btnConfEnvio) btnConfEnvio.addEventListener("click", confirmarEnvioYPagar);
   if (btnCerrarEnvio)  btnCerrarEnvio.addEventListener("click", cerrarFormularioEnvio);
   if (overlayEnvio)    overlayEnvio.addEventListener("click", e => {
     if (e.target === overlayEnvio) cerrarFormularioEnvio();

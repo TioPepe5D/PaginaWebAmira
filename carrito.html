@@ -137,12 +137,6 @@
           </button>
           <div class="btn-mp-estado" id="btn-mp-estado"></div>
 
-          <div class="separador-pago"><span>o</span></div>
-
-          <button class="btn-transferencia" id="btn-transferencia" disabled>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-            Pagar con Transferencia
-          </button>
 
           <a href="index.html#catalogo" class="btn-seguir">← Seguir comprando</a>
         </div>
@@ -283,65 +277,6 @@
           Continuar al pago →
         </button>
       </form>
-    </div>
-  </div>
-
-  <!-- MODAL: Transferencia bancaria -->
-  <div class="modal-transferencia-overlay" id="modal-transferencia-overlay">
-    <div class="modal-transferencia">
-      <div class="modal-transferencia-header">
-        <div class="modal-transferencia-titulo">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          Datos de Transferencia
-        </div>
-        <button class="modal-transferencia-cerrar" id="modal-transferencia-cerrar">&times;</button>
-      </div>
-
-      <div class="modal-total-transferencia">
-        <span class="modal-total-label">Total a transferir</span>
-        <span class="modal-total-valor" id="modal-total-valor">$0 CLP</span>
-      </div>
-
-      <div class="datos-bancarios">
-        <div class="dato-fila">
-          <span class="dato-label">Banco</span>
-          <span class="dato-valor" id="dato-banco">Banco de Chile</span>
-        </div>
-        <div class="dato-fila">
-          <span class="dato-label">Nombre</span>
-          <span class="dato-valor" id="dato-nombre">Inversiones Aravena SpA</span>
-        </div>
-        <div class="dato-fila">
-          <span class="dato-label">RUT</span>
-          <span class="dato-valor" id="dato-rut">77.807.825-2</span>
-        </div>
-        <div class="dato-fila">
-          <span class="dato-label">Tipo de cuenta</span>
-          <span class="dato-valor" id="dato-tipo">Cuenta Corriente</span>
-        </div>
-        <div class="dato-fila">
-          <span class="dato-label">N° de cuenta</span>
-          <span class="dato-valor" id="dato-numero">00-801-77289-03</span>
-        </div>
-        <div class="dato-fila">
-          <span class="dato-label">Email</span>
-          <span class="dato-valor" id="dato-email">diegoaravenavera@gmail.com</span>
-        </div>
-      </div>
-
-      <button class="btn-copiar-datos" id="btn-copiar-datos">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Copiar datos al portapapeles
-      </button>
-
-      <a class="btn-confirmar-transferencia" id="btn-confirmar-transferencia" href="#" target="_blank">
-        <svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M16 2C8.268 2 2 8.268 2 16c0 2.478.678 4.797 1.856 6.785L2 30l7.43-1.82A13.94 13.94 0 0 0 16 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm6.29 19.366c-.344-.172-2.036-1.004-2.352-1.118-.316-.116-.546-.172-.776.172-.23.344-.892 1.118-1.094 1.348-.2.23-.402.258-.746.086-.344-.172-1.452-.536-2.766-1.706-1.022-.912-1.712-2.036-1.912-2.38-.2-.344-.022-.53.15-.702.154-.154.344-.402.516-.602.172-.2.23-.344.344-.574.116-.23.058-.43-.028-.602-.086-.172-.776-1.87-1.064-2.562-.28-.674-.564-.582-.776-.594-.2-.01-.43-.012-.66-.012s-.602.086-.918.43c-.316.344-1.204 1.176-1.204 2.868s1.232 3.326 1.404 3.556c.172.23 2.426 3.706 5.878 5.198.822.354 1.464.566 1.964.724.826.262 1.578.226 2.172.138.662-.1 2.036-.832 2.322-1.634.288-.802.288-1.49.202-1.634-.086-.144-.316-.23-.66-.402z"/></svg>
-        Ya transferí — Enviar comprobante
-      </a>
-
-      <p class="modal-nota">
-        Tu pedido quedará como <strong>pendiente de confirmación</strong> hasta que verifiquemos tu transferencia (máx. 24 hrs hábiles).
-      </p>
     </div>
   </div>
 
