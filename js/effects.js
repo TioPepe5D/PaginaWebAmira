@@ -3,6 +3,8 @@
    ============================================= */
 (function () {
   const SYMBOLS = ['✦', '✧', '◆', '✴', '⋆', '✵', '❋', '✼'];
+  const MAX_SPARKLES = 14;
+  let timer = null;
 
   function heroSparkles() {
     const hero = document.getElementById('hero');
@@ -12,6 +14,12 @@
     hero.style.overflow = 'hidden';
 
     function spawn() {
+      // Pausar si la pestaña no está visible o si ya hay muchas
+      if (document.hidden || hero.querySelectorAll('.hero-sparkle').length >= MAX_SPARKLES) {
+        timer = setTimeout(spawn, 600);
+        return;
+      }
+
       const el = document.createElement('span');
       el.className = 'hero-sparkle';
       el.textContent = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
@@ -29,8 +37,7 @@
       hero.appendChild(el);
       el.addEventListener('animationend', () => el.remove(), { once: true });
 
-      // Siguiente chispa entre 120–500 ms
-      setTimeout(spawn, Math.random() * 380 + 120);
+      timer = setTimeout(spawn, Math.random() * 500 + 250);
     }
 
     spawn();
@@ -42,4 +49,3 @@
     heroSparkles();
   }
 })();
-

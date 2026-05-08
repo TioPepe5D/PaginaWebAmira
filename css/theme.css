@@ -970,8 +970,9 @@ button { font-family: inherit; cursor: pointer; }
    FONDO ANIMADO — ORBES + DIAMANTES
    ══════════════════════════════════════════ */
 
+body { isolation: isolate; }
 .bg-aura {
-  position: fixed; inset: 0; z-index: 0;
+  position: fixed; inset: 0; z-index: -1;
   pointer-events: none; overflow: hidden;
 }
 
@@ -1062,5 +1063,4 @@ button { font-family: inherit; cursor: pointer; }
   background: color-mix(in srgb, var(--primary) 50%, transparent);
 }
 
-/* El contenido siempre por encima */
-body > *:not(.bg-aura) { position: relative; z-index: 1; }
+/* El fondo va detrás del contenido vía isolation + z-index:-1 en .bg-aura */
