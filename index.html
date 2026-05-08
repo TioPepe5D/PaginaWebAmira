@@ -135,6 +135,15 @@
   }
   </script>
 
+  <!-- Fondo animado -->
+  <div class="bg-aura" aria-hidden="true">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div class="bg-orb bg-orb-4"></div>
+    <div class="bg-diamonds" id="bg-diamonds"></div>
+  </div>
+
   <!-- LOADER INICIAL -->
   <div class="page-loader" id="page-loader" aria-hidden="true">
     <div class="page-loader-logo">Ammira Store</div>
@@ -537,5 +546,27 @@
   </script>
 
   <script src="js/presencia.js"></script>
+  <script>
+    // Diamantes flotantes del fondo
+    (function() {
+      const cont = document.getElementById('bg-diamonds');
+      if (!cont) return;
+      const count = 18;
+      for (let i = 0; i < count; i++) {
+        const d = document.createElement('div');
+        d.className = 'bg-diamond';
+        const size = 6 + Math.random() * 14;
+        d.style.cssText = [
+          `--s:${size}px`,
+          `--op:${20 + Math.random() * 30}%`,
+          `--dur:${14 + Math.random() * 20}s`,
+          `--delay:-${Math.random() * 20}s`,
+          `left:${Math.random() * 100}%`,
+          `bottom:-${size}px`,
+        ].join(';');
+        cont.appendChild(d);
+      }
+    })();
+  </script>
 </body>
 </html>

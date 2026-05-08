@@ -963,3 +963,102 @@ button { font-family: inherit; cursor: pointer; }
   transition: opacity .3s, transform .3s;
 }
 #toast-auth.activo { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ══════════════════════════════════════════
+   FONDO ANIMADO — ORBES + DIAMANTES
+   ══════════════════════════════════════════ */
+
+.bg-aura {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+}
+
+/* ── Orbes de luz ── */
+.bg-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+
+.bg-orb-1 {
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 55%, transparent), transparent 70%);
+  top: -200px; left: -150px;
+  opacity: .35;
+  animation: orbDrift1 28s ease-in-out infinite;
+}
+.bg-orb-2 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--secondary) 50%, transparent), transparent 70%);
+  bottom: -100px; right: -100px;
+  opacity: .30;
+  animation: orbDrift2 34s ease-in-out infinite;
+}
+.bg-orb-3 {
+  width: 450px; height: 450px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 40%, transparent), transparent 70%);
+  top: 45%; left: 55%;
+  opacity: .22;
+  animation: orbDrift3 22s ease-in-out infinite;
+}
+.bg-orb-4 {
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, color-mix(in srgb, #f9c4d2 60%, transparent), transparent 70%);
+  top: 20%; right: 5%;
+  opacity: .20;
+  animation: orbDrift4 40s ease-in-out infinite;
+}
+
+@keyframes orbDrift1 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  33%     { transform: translate(80px, 60px) scale(1.08); }
+  66%     { transform: translate(-40px, 100px) scale(.94); }
+}
+@keyframes orbDrift2 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  40%     { transform: translate(-100px, -70px) scale(1.1); }
+  70%     { transform: translate(60px, -30px) scale(.92); }
+}
+@keyframes orbDrift3 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  50%     { transform: translate(-80px, 60px) scale(1.15); }
+}
+@keyframes orbDrift4 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  30%     { transform: translate(-50px, 80px) scale(.9); }
+  70%     { transform: translate(40px, -60px) scale(1.12); }
+}
+
+/* ── Diamantes flotantes ── */
+.bg-diamonds { position: absolute; inset: 0; }
+
+.bg-diamond {
+  position: absolute;
+  width: var(--s, 10px); height: var(--s, 10px);
+  background: color-mix(in srgb, var(--primary) var(--op, 40%), transparent);
+  clip-path: polygon(50% 0%, 100% 35%, 50% 100%, 0% 35%);
+  animation: diamondFloat var(--dur, 18s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+@keyframes diamondFloat {
+  0%   { transform: translateY(0) rotate(0deg) scale(.8);   opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { transform: translateY(-55vh) rotate(180deg) scale(1.1); opacity: .7; }
+  90%  { opacity: 0; }
+  100% { transform: translateY(-100vh) rotate(360deg) scale(.8); opacity: 0; }
+}
+
+/* Modo oscuro: orbes más vivos */
+.dark .bg-orb-1 { opacity: .25; }
+.dark .bg-orb-2 { opacity: .22; }
+.dark .bg-orb-3 { opacity: .18; }
+.dark .bg-orb-4 { opacity: .15; }
+.dark .bg-diamond {
+  background: color-mix(in srgb, var(--primary) 50%, transparent);
+}
+
+/* El contenido siempre por encima */
+body > *:not(.bg-aura) { position: relative; z-index: 1; }
