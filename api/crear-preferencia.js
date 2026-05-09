@@ -72,10 +72,16 @@ module.exports = async (req, res) => {
   }
 
   // ── Crear preferencia en MercadoPago con precios reales ──
-  const siteUrl   = process.env.SITE_URL;
-  const vercelUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : siteUrl;
+  // SITE_URL debe ser el dominio estable de producción (ej: https://ammirastore.cl)
+  // VERCEL_URL cambia con cada deploy y rompe el webhook → solo usar como último recurso
+  const siteUrl = process.env.SITE_URL
+    || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null)
+    || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null);
+
+  if (!siteUrl) {
+    console.error("[crear-preferencia] Falta SITE_URL");
+    return res.status(500).json({ error: "Configuración del servidor incompleta" });
+  }
 
   const mpItems = itemsValidados.map(i => ({
     id:         i.id,
@@ -109,7 +115,7 @@ module.exports = async (req, res) => {
         auto_return:          "approved",
         statement_descriptor: "Ammira Store",
         external_reference:   String(pedido.id),
-        notification_url:     `${vercelUrl}/api/mp-webhook`
+        notification_url:     `${siteUrl}/api/mp-webhook`
       }
     });
 

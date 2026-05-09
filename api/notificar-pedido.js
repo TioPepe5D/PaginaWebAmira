@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
   const totalFormato = Number(total).toLocaleString("es-CL");
 
   const mensaje =
-    `🔔 NUEVO PEDIDO — Joyería Aravena\n\n` +
+    `🔔 NUEVO PEDIDO — Ammira Store\n\n` +
     `${emoji} Método: ${metodo}\n` +
     `📦 ID: ${pedidoId || "N/A"}\n` +
     `💰 Total: $${totalFormato} CLP\n` +

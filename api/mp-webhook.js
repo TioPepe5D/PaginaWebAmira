@@ -1,4 +1,5 @@
-const { MercadoPagoConfig, Payment } = require("mercadopago");
+const crypto = require("crypto");
+const { MercadoPagoConfig, Payment, MerchantOrder } = require("mercadopago");
 const { createClient } = require("@supabase/supabase-js");
 
 /* ── Helper: notificación WhatsApp via CallMeBot ── */
@@ -17,7 +18,7 @@ async function enviarNotifWhatsApp({ tipo, pedidoId, total, items, email }) {
     : "Sin detalle";
 
   const mensaje =
-    `🔔 NUEVO PEDIDO — Joyería Aravena\n\n` +
+    `🔔 NUEVO PEDIDO — Ammira Store\n\n` +
     `${emoji} Método: ${metodo}\n` +
     `📦 ID: ${pedidoId || "N/A"}\n` +
     `💰 Total: $${Number(total).toLocaleString("es-CL")} CLP\n` +
@@ -30,98 +31,216 @@ async function enviarNotifWhatsApp({ tipo, pedidoId, total, items, email }) {
     `&text=${encodeURIComponent(mensaje)}` +
     `&apikey=${apiKey}`;
 
-  const resp = await fetch(url);
-  console.log("[Notif] WhatsApp enviado:", resp.status);
+  try {
+    const resp = await fetch(url);
+    console.log("[Notif] WhatsApp enviado:", resp.status);
+  } catch (e) {
+    console.warn("[Notif] Error CallMeBot:", e.message);
+  }
 }
 
-module.exports = async (req, res) => {
-  // MercadoPago valida la URL con GET al registrar el webhook
-  if (req.method === "GET") {
-    return res.status(200).send("OK");
+/* ── Validación de firma MP ──
+   Ver: https://www.mercadopago.cl/developers/es/docs/your-integrations/notifications/webhooks
+   MP firma con HMAC-SHA256 sobre: "id:<data.id>;request-id:<x-request-id>;ts:<ts>;"
+*/
+function validarFirmaMP({ headers, dataId }) {
+  const secret = process.env.MP_WEBHOOK_SECRET;
+  if (!secret) return { ok: true, motivo: "sin-secret-configurado" };
+
+  const xSignature = headers["x-signature"];
+  const xRequestId = headers["x-request-id"];
+  if (!xSignature || !xRequestId) return { ok: false, motivo: "headers-faltantes" };
+
+  // x-signature viene como "ts=1234567890,v1=hashvalue"
+  const partes = Object.fromEntries(
+    String(xSignature).split(",").map(p => {
+      const i = p.indexOf("=");
+      return [p.slice(0, i).trim(), p.slice(i + 1).trim()];
+    })
+  );
+  const ts   = partes.ts;
+  const hash = partes.v1;
+  if (!ts || !hash) return { ok: false, motivo: "firma-malformada" };
+
+  // Reject timestamps older than 10 min (anti-replay)
+  const ahora = Math.floor(Date.now() / 1000);
+  if (Math.abs(ahora - Number(ts)) > 600) return { ok: false, motivo: "timestamp-viejo" };
+
+  const manifest = `id:${dataId};request-id:${xRequestId};ts:${ts};`;
+  const esperado = crypto.createHmac("sha256", secret).update(manifest).digest("hex");
+
+  const ok = crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(esperado));
+  return { ok, motivo: ok ? "ok" : "hash-no-coincide" };
+}
+
+/* ── Helper: extraer tipo + id del webhook (POST o GET legacy) ── */
+function parseEvento(req) {
+  const body  = req.body || {};
+  const query = req.query || {};
+
+  const tipo = body.type || body.topic || query.type || query.topic || null;
+  const id =
+    body.data?.id ||
+    body.id ||
+    query["data.id"] ||
+    query.id ||
+    null;
+
+  return { tipo, id: id ? String(id) : null };
+}
+
+/* ── Procesar pago aprobado/rechazado ── */
+async function procesarPayment({ paymentId, supabase, mpClient, requestId }) {
+  const paymentApi = new Payment(mpClient);
+  const pago = await paymentApi.get({ id: paymentId });
+
+  const mpStatus = pago.status;
+  const pedidoId = pago.external_reference;
+
+  console.log(`[Webhook MP][${requestId}] Payment ${paymentId} status=${mpStatus} pedido=${pedidoId}`);
+
+  if (!pedidoId) return { ok: false, motivo: "sin-external-reference" };
+
+  // Mapear estado MP → nuestro sistema
+  let estado;
+  if (mpStatus === "approved")                                   estado = "pagado";
+  else if (mpStatus === "rejected" || mpStatus === "cancelled")  estado = "fallido";
+  else                                                           estado = "pendiente";
+
+  // Idempotencia: leer estado actual antes de actualizar
+  const { data: pedidoActual } = await supabase
+    .from("pedidos")
+    .select("estado, total, items")
+    .eq("id", pedidoId)
+    .single();
+
+  if (!pedidoActual) {
+    console.warn(`[Webhook MP][${requestId}] Pedido ${pedidoId} no existe`);
+    return { ok: false, motivo: "pedido-no-existe" };
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).send("Method Not Allowed");
-  }
+  const yaEstabaPagado = pedidoActual.estado === "pagado";
 
-  try {
-    const body = req.body || {};
-    console.log("[Webhook MP] Notificación:", JSON.stringify(body));
-
-    // Solo procesar eventos de pago
-    const tipo = body.type || body.topic;
-    if (tipo !== "payment") {
-      return res.status(200).send("OK");
-    }
-
-    const paymentId = body.data?.id || body.id;
-    if (!paymentId) return res.status(200).send("OK");
-
-    // Obtener detalles del pago desde MP
-    const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
-    const paymentApi = new Payment(client);
-    const pago = await paymentApi.get({ id: paymentId });
-
-    const mpStatus = pago.status;
-    const pedidoId = pago.external_reference;
-
-    console.log("[Webhook MP] Status:", mpStatus, "| PedidoId:", pedidoId);
-
-    if (!pedidoId) return res.status(200).send("OK");
-
-    // Mapear estado MP → nuestro sistema
-    let estado;
-    if (mpStatus === "approved")                                    estado = "pagado";
-    else if (mpStatus === "rejected" || mpStatus === "cancelled")   estado = "fallido";
-    else                                                            estado = "pendiente";
-
-    // Actualizar Supabase con la service role key (solo en servidor)
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_KEY
-    );
-
+  // Solo actualizar si cambia el estado
+  if (pedidoActual.estado !== estado) {
     const { error } = await supabase
       .from("pedidos")
       .update({ estado, mp_payment_id: String(paymentId) })
       .eq("id", pedidoId);
 
     if (error) {
-      console.error("[Webhook MP] Error Supabase:", error);
-    } else {
-      console.log("[Webhook MP] Pedido", pedidoId, "→", estado);
+      console.error(`[Webhook MP][${requestId}] Error Supabase:`, error);
+      return { ok: false, motivo: "error-supabase" };
+    }
+    console.log(`[Webhook MP][${requestId}] Pedido ${pedidoId} → ${estado}`);
+  } else {
+    console.log(`[Webhook MP][${requestId}] Pedido ${pedidoId} ya estaba en ${estado} (idempotente)`);
+  }
 
-      // Notificar por WhatsApp solo cuando el pago es aprobado
-      if (estado === "pagado") {
-        try {
-          const { data: pedido } = await supabase
-            .from("pedidos")
-            .select("total, items, user_id")
-            .eq("id", pedidoId)
-            .single();
+  // Notificar SOLO en la primera transición a "pagado"
+  if (estado === "pagado" && !yaEstabaPagado) {
+    await enviarNotifWhatsApp({
+      tipo:     "mercadopago",
+      pedidoId,
+      total:    pedidoActual.total ?? pago.transaction_amount ?? 0,
+      items:    pedidoActual.items ?? [],
+      email:    pago.payer?.email || "N/A"
+    });
+  }
 
-          const email = pago.payer?.email || "N/A";
-          const total = pedido?.total ?? pago.transaction_amount ?? 0;
-          const items = pedido?.items ?? [];
+  return { ok: true, estado, pedidoId };
+}
 
-          await enviarNotifWhatsApp({
-            tipo:      "mercadopago",
-            pedidoId,
-            total,
-            items,
-            email
-          });
-        } catch (ne) {
-          console.warn("[Webhook MP] No se pudo notificar:", ne.message);
-        }
+/* ── Procesar merchant_order (Checkout Pro) ── */
+async function procesarMerchantOrder({ orderId, supabase, mpClient, requestId }) {
+  const moApi = new MerchantOrder(mpClient);
+  const orden = await moApi.get({ merchantOrderId: orderId });
+
+  const pedidoId = orden.external_reference;
+  const pagos    = Array.isArray(orden.payments) ? orden.payments : [];
+  const aprobado = pagos.find(p => p.status === "approved");
+
+  console.log(`[Webhook MP][${requestId}] MerchantOrder ${orderId} pedido=${pedidoId} pagos=${pagos.length} aprobado=${!!aprobado}`);
+
+  if (!aprobado) return { ok: true, motivo: "sin-pago-aprobado" };
+
+  // Reusar lógica de payment para evitar duplicación
+  return procesarPayment({
+    paymentId: aprobado.id,
+    supabase,
+    mpClient,
+    requestId
+  });
+}
+
+module.exports = async (req, res) => {
+  const requestId = req.headers["x-request-id"] || `local-${Date.now()}`;
+
+  // Headers CORS / aceptar cualquier preflight
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, HEAD");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-signature, x-request-id");
+
+  // OPTIONS / HEAD → 200 OK sin procesar (algunos clientes hacen preflight)
+  if (req.method === "OPTIONS" || req.method === "HEAD") {
+    return res.status(200).end();
+  }
+
+  try {
+    // GET con query string vacío = ping de validación de MP al registrar URL
+    if (req.method === "GET" && !req.query?.id && !req.query?.["data.id"] && !req.query?.topic && !req.query?.type) {
+      return res.status(200).send("OK");
+    }
+
+    // Cualquier otro método raro → 200 OK (no romper el test de MP)
+    if (req.method !== "POST" && req.method !== "GET") {
+      console.log(`[Webhook MP][${requestId}] Método no estándar: ${req.method}`);
+      return res.status(200).send("OK");
+    }
+
+    const { tipo, id } = parseEvento(req);
+    console.log(`[Webhook MP][${requestId}] ${req.method} tipo=${tipo} id=${id}`);
+
+    if (!tipo || !id) {
+      console.warn(`[Webhook MP][${requestId}] Evento sin tipo/id, ignorado`);
+      return res.status(200).send("OK");
+    }
+
+    // Validar firma SOLO en POST (los GET legacy no traen firma)
+    if (req.method === "POST") {
+      const firma = validarFirmaMP({ headers: req.headers, dataId: id });
+      if (!firma.ok && firma.motivo !== "sin-secret-configurado") {
+        console.warn(`[Webhook MP][${requestId}] Firma inválida: ${firma.motivo}`);
+        // 401 hace que MP reintente (lo cual está bien si es un error transitorio)
+        return res.status(401).send("Invalid signature");
       }
+    }
+
+    if (!process.env.MP_ACCESS_TOKEN) {
+      console.error(`[Webhook MP][${requestId}] Falta MP_ACCESS_TOKEN`);
+      return res.status(200).send("OK"); // 200 para que MP no reintente eternamente
+    }
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+      console.error(`[Webhook MP][${requestId}] Faltan vars Supabase`);
+      return res.status(200).send("OK");
+    }
+
+    const mpClient = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+    if (tipo === "payment") {
+      await procesarPayment({ paymentId: id, supabase, mpClient, requestId });
+    } else if (tipo === "merchant_order") {
+      await procesarMerchantOrder({ orderId: id, supabase, mpClient, requestId });
+    } else {
+      console.log(`[Webhook MP][${requestId}] Tipo "${tipo}" no manejado`);
     }
 
     return res.status(200).send("OK");
 
   } catch (err) {
-    // Siempre 200 → MP no reintenta
-    console.error("[Webhook MP] Error:", err.message);
+    // Siempre 200 → MP no reintenta indefinidamente
+    console.error(`[Webhook MP][${requestId}] Error:`, err.message, err.stack);
     return res.status(200).send("OK");
   }
 };
