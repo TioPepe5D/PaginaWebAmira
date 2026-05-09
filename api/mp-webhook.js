@@ -176,14 +176,26 @@ async function procesarMerchantOrder({ orderId, supabase, mpClient, requestId })
 module.exports = async (req, res) => {
   const requestId = req.headers["x-request-id"] || `local-${Date.now()}`;
 
+  // Headers CORS / aceptar cualquier preflight
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, HEAD");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-signature, x-request-id");
+
+  // OPTIONS / HEAD → 200 OK sin procesar (algunos clientes hacen preflight)
+  if (req.method === "OPTIONS" || req.method === "HEAD") {
+    return res.status(200).end();
+  }
+
   try {
     // GET con query string vacío = ping de validación de MP al registrar URL
     if (req.method === "GET" && !req.query?.id && !req.query?.["data.id"] && !req.query?.topic && !req.query?.type) {
       return res.status(200).send("OK");
     }
 
+    // Cualquier otro método raro → 200 OK (no romper el test de MP)
     if (req.method !== "POST" && req.method !== "GET") {
-      return res.status(405).send("Method Not Allowed");
+      console.log(`[Webhook MP][${requestId}] Método no estándar: ${req.method}`);
+      return res.status(200).send("OK");
     }
 
     const { tipo, id } = parseEvento(req);
