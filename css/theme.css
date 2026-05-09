@@ -799,10 +799,38 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 768px) {
-  .header-container { padding: 14px 18px; gap: 8px; }
+  .header-container { padding: 14px 16px; gap: 8px; }
   .cuenta-nombre-header { display: none; }
   .catalogo, .stats, .beneficios { padding-left: 18px; padding-right: 18px; }
   .carrito-panel, .auth-panel, .usuario-panel, .producto-detalle-panel { max-width: 100%; }
+
+  /* Logo: dejar de centrarse absoluto y hacer flex para evitar overlap */
+  .header-container .logo {
+    position: static;
+    transform: none;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .logo-texto {
+    font-size: 1.15rem;
+    letter-spacing: .08em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+  .header-container .header-iconos {
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .header-container { padding: 12px 12px; gap: 6px; }
+  .logo-texto { font-size: 1rem; letter-spacing: .06em; }
+  .header-iconos { gap: 2px; }
+  .icono-btn { padding: 0 8px; }
 }
 
 /* ---------- DARK MODE TOGGLE STATES ---------- */
