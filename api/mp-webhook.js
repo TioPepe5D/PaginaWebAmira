@@ -209,10 +209,18 @@ module.exports = async (req, res) => {
     // Validar firma SOLO en POST (los GET legacy no traen firma)
     if (req.method === "POST") {
       const firma = validarFirmaMP({ headers: req.headers, dataId: id });
-      if (!firma.ok && firma.motivo !== "sin-secret-configurado") {
+      // Si no hay headers de firma (test panel MP, IPN legacy) → continuar.
+      // La validación real ocurre cuando llamamos a paymentApi.get() con MP_ACCESS_TOKEN:
+      // si el paymentId es falso, MP devuelve error y no actualizamos nada.
+      // Si en cambio HAY firma pero es inválida (hash no coincide, ts viejo, malformada)
+      // → rechazar con 401 porque es un intento deliberado de spoofing.
+      const motivosBenignos = ["sin-secret-configurado", "headers-faltantes"];
+      if (!firma.ok && !motivosBenignos.includes(firma.motivo)) {
         console.warn(`[Webhook MP][${requestId}] Firma inválida: ${firma.motivo}`);
-        // 401 hace que MP reintente (lo cual está bien si es un error transitorio)
         return res.status(401).send("Invalid signature");
+      }
+      if (firma.motivo === "headers-faltantes") {
+        console.warn(`[Webhook MP][${requestId}] Sin firma (test panel/legacy); validando vía MP API`);
       }
     }
 
