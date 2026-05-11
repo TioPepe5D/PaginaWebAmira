@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Ammira Store</title>
-  <link rel="stylesheet" href="css/admin.css?v=4">
+  <link rel="stylesheet" href="css/admin.css?v=5">
   <script>
     (function() {
       const tema = localStorage.getItem("tema") || "light";
@@ -307,6 +307,53 @@
         </table>
       </section>
 
+      <!-- Pagos en MercadoPago (consulta en vivo a la API de MP) -->
+      <section class="admin-mp-wrap">
+        <div class="chart-header">
+          <div>
+            <h2 class="chart-title">Pagos en MercadoPago</h2>
+            <p class="chart-subtitle">Consulta en vivo de los pagos recibidos en tu cuenta de MercadoPago</p>
+          </div>
+          <div class="admin-mp-acciones">
+            <select id="mp-filtro-estado" class="admin-select">
+              <option value="todos">Todos los estados</option>
+              <option value="approved">Aprobados</option>
+              <option value="pending">Pendientes</option>
+              <option value="in_process">En proceso</option>
+              <option value="rejected">Rechazados</option>
+              <option value="cancelled">Cancelados</option>
+              <option value="refunded">Reembolsados</option>
+            </select>
+            <button id="btn-cargar-mp" class="btn-refrescar" title="Consultar MercadoPago">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              <span>Cargar pagos</span>
+            </button>
+          </div>
+        </div>
+        <div class="admin-tabla-wrap">
+          <table class="admin-tabla">
+            <thead>
+              <tr>
+                <th>ID pago</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Método</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Pedido</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-pagos-mp">
+              <tr><td colspan="7" class="tabla-vacia">Pulsa “Cargar pagos” para consultar MercadoPago.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
     </div>
 
   </main>
@@ -425,7 +472,7 @@
 
   <script src="js/supabase-client.js?v=3"></script>
   <script src="js/products.js?v=3"></script>
-  <script src="js/admin.js?v=3"></script>
+  <script src="js/admin.js?v=4"></script>
 
   <script>
     const _temaBtn = document.getElementById("tema-btn");
