@@ -94,6 +94,10 @@ function configurarEventos() {
 
   document.getElementById('btn-export').addEventListener('click', exportarCSV);
 
+  // Pagos en MercadoPago (consulta en vivo)
+  const btnMP = document.getElementById('btn-cargar-mp');
+  if (btnMP) btnMP.addEventListener('click', cargarPagosMP);
+
   document.getElementById('filtro-busqueda').addEventListener('input', aplicarFiltros);
   document.getElementById('filtro-estado').addEventListener('change', aplicarFiltros);
 
@@ -1136,5 +1140,92 @@ async function cargarUsuariosActivos() {
     }
   } catch (e) {
     console.warn('[Admin] Error cargando UAU:', e.message);
+  }
+}
+
+/* ── Pagos en MercadoPago (consulta en vivo a la API) ──────── */
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+const MP_ESTADO_LABEL = {
+  approved:    'Aprobado',
+  pending:     'Pendiente',
+  in_process:  'En proceso',
+  authorized:  'Autorizado',
+  rejected:    'Rechazado',
+  cancelled:   'Cancelado',
+  refunded:    'Reembolsado',
+  charged_back:'Contracargo'
+};
+
+async function cargarPagosMP() {
+  const tbody = document.getElementById('tabla-pagos-mp');
+  const btn   = document.getElementById('btn-cargar-mp');
+  if (!tbody) return;
+
+  tbody.innerHTML = '<tr><td colspan="7" class="tabla-cargando">Consultando MercadoPago…</td></tr>';
+  if (btn) btn.disabled = true;
+
+  try {
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) {
+      mostrarToast('Error', 'Sesión expirada. Recarga la página.', 'error');
+      tbody.innerHTML = '<tr><td colspan="7" class="tabla-vacia">Sesión expirada.</td></tr>';
+      return;
+    }
+
+    const estado = document.getElementById('mp-filtro-estado')?.value || 'todos';
+
+    const res = await fetch('/api/mp-pagos', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ adminToken: session.access_token, estado, limit: 50 })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      mostrarToast('Error', data.error || 'No se pudieron cargar los pagos', 'error');
+      tbody.innerHTML = `<tr><td colspan="7" class="tabla-vacia">${escHtml(data.error || 'Error')}</td></tr>`;
+      return;
+    }
+
+    const pagos = Array.isArray(data.pagos) ? data.pagos : [];
+    if (!pagos.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="tabla-vacia">No hay pagos para mostrar.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = pagos.map(p => {
+      const fecha = p.fechaCreado ? new Date(p.fechaCreado).toLocaleString('es-CL') : '—';
+      const monto = p.monto != null ? '$' + Number(p.monto).toLocaleString('es-CL') + ' ' + (p.moneda || '') : '—';
+      const estadoLabel = MP_ESTADO_LABEL[p.estado] || p.estado || '—';
+      const estadoClase = p.estado === 'approved' ? 'pagado'
+        : (p.estado === 'rejected' || p.estado === 'cancelled' || p.estado === 'charged_back') ? 'fallido'
+        : 'pendiente';
+      const metodo = [p.metodo, p.tipoMetodo].filter(Boolean).join(' · ') || '—';
+      const pedido = p.pedidoId ? String(p.pedidoId).slice(0, 8).toUpperCase() : '—';
+      const cliente = p.email || '—';
+      return `<tr>
+        <td class="mono">${escHtml(p.id)}</td>
+        <td>${escHtml(fecha)}</td>
+        <td>${escHtml(cliente)}</td>
+        <td>${escHtml(metodo)}</td>
+        <td>${escHtml(monto)}</td>
+        <td><span class="estado-badge estado-${estadoClase}">${escHtml(estadoLabel)}</span>${p.detalleEstado ? `<br><small class="muted">${escHtml(p.detalleEstado)}</small>` : ''}</td>
+        <td class="mono">${escHtml(pedido)}</td>
+      </tr>`;
+    }).join('');
+
+    mostrarToast('MercadoPago', `${pagos.length} pago${pagos.length !== 1 ? 's' : ''} cargado${pagos.length !== 1 ? 's' : ''}`, 'ok');
+
+  } catch (e) {
+    console.error('[Admin] Error cargando pagos MP:', e);
+    mostrarToast('Error', 'Error inesperado al consultar MercadoPago.', 'error');
+    tbody.innerHTML = '<tr><td colspan="7" class="tabla-vacia">Error inesperado.</td></tr>';
+  } finally {
+    if (btn) btn.disabled = false;
   }
 }

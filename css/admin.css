@@ -1847,3 +1847,22 @@
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(37,211,102,0.4);
 }
+
+/* ── Pagos en MercadoPago ── */
+.admin-mp-wrap {
+  background: var(--admin-tarjeta);
+  border: 1px solid var(--admin-borde-suave);
+  border-radius: 18px;
+  padding: 1.6rem 1.8rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--admin-sombra);
+}
+.admin-mp-wrap .admin-tabla-wrap { margin-top: 1rem; }
+.admin-mp-acciones {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.admin-tabla small.muted,
+.muted { color: var(--admin-texto-suave, #8a8a8a); font-size: 0.78rem; }
