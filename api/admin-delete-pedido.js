@@ -27,7 +27,8 @@ module.exports = async (req, res) => {
     return res.status(401).json({ error: 'Error de autenticación' });
   }
 
-  if (!ADMIN_EMAILS.includes(adminEmail)) {
+  const emailLower = (adminEmail || '').toLowerCase();
+  if (!ADMIN_EMAILS.some(a => a.toLowerCase() === emailLower)) {
     return res.status(403).json({ error: 'No autorizado' });
   }
 
