@@ -363,7 +363,7 @@ img { max-width: 100%; display: block; }
   content: '';
   position: absolute;
   inset: -8%;
-  background-image: url('../img/hero-bg.jpg');
+  background-image: url('../img/hero-bg.webp');
   background-size: cover;
   background-position: center center;
   filter: blur(10px) brightness(0.45);

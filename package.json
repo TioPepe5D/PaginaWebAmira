@@ -4,20 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "optimize:images": "node scripts/optimize-images.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TioPepe5D/Proyecto-Aravena.git"
+    "url": "git+https://github.com/TioPepe5D/PaginaWebAmira.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/TioPepe5D/Proyecto-Aravena/issues"
+    "url": "https://github.com/TioPepe5D/PaginaWebAmira/issues"
   },
-  "homepage": "https://github.com/TioPepe5D/Proyecto-Aravena#readme",
+  "homepage": "https://github.com/TioPepe5D/PaginaWebAmira#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0",
     "mercadopago": "^2.12.0"
