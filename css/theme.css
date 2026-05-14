@@ -1,8 +1,57 @@
 /* ============================================================
-   Ammira Store — Theme rosa (Tailwind v4 compatible)
-   Variables: definidas via <style type="text/tailwindcss"> en HTML
-   Este archivo: componentes, animaciones, estados toggle por JS
+   Ammira Store — Theme rosa
    ============================================================ */
+
+/* ---------- TOKENS DE COLOR (light + dark) ---------- */
+:root {
+  --background: #f9f9f9;
+  --foreground: #202020;
+  --card: #fcfcfc;
+  --card-foreground: #202020;
+  --primary: #ffb7c5;
+  --primary-foreground: #ffffff;
+  --secondary: #f4c2c2;
+  --secondary-foreground: #000000;
+  --muted: #efefef;
+  --muted-foreground: #646464;
+  --accent: #e8e8e8;
+  --accent-foreground: #202020;
+  --destructive: #e54d2e;
+  --destructive-foreground: #ffffff;
+  --border: #d8d8d8;
+  --input: #d8d8d8;
+  --ring: #644a40;
+  --radius: 0.5rem;
+  --radius-md: calc(var(--radius) - 2px);
+  --shadow: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 1px 2px -1px hsl(0 0% 0% / .10);
+  --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 1px 2px -1px hsl(0 0% 0% / .10);
+  --shadow-md: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 2px 4px -1px hsl(0 0% 0% / .10);
+  --shadow-lg: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 4px 6px -1px hsl(0 0% 0% / .10);
+  --shadow-xl: 0 1px 3px 0 hsl(0 0% 0% / .10), 0 8px 10px -1px hsl(0 0% 0% / .10);
+  --shadow-2xl: 0 1px 3px 0 hsl(0 0% 0% / .25);
+}
+.dark {
+  --background: #111111;
+  --foreground: #eeeeee;
+  --card: #191919;
+  --card-foreground: #eeeeee;
+  --primary: #ffb7c5;
+  --primary-foreground: #081a1b;
+  --secondary: #fff0f5;
+  --muted: #222222;
+  --muted-foreground: #b4b4b4;
+  --accent: #2a2a2a;
+  --accent-foreground: #eeeeee;
+  --border: #2a2a2a;
+  --input: #484848;
+  --ring: #ffe0c2;
+}
+
+/* ---------- UTILIDADES (reemplazo de las pocas clases Tailwind usadas) ---------- */
+.bg-background { background-color: var(--background); }
+.text-foreground { color: var(--foreground); }
+.font-sans { font-family: 'AR One Sans', ui-sans-serif, system-ui, sans-serif; }
+.antialiased { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 @import url('https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500;600;700&family=Adamina&family=Fragment+Mono&display=swap');
 
