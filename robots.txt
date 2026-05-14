@@ -5,4 +5,4 @@ Disallow: /perfil.html
 Disallow: /carrito.html
 Disallow: /api/
 
-Sitemap: https://joyasaravena.cl/sitemap.xml
+Sitemap: https://ammirastore.cl/sitemap.xml

@@ -128,7 +128,7 @@ function abrirDetalleProducto(id) {
   // Construir URL absoluta de la imagen (por si es ruta relativa)
   const imagenUrl = producto.imagen.startsWith('http')
     ? producto.imagen
-    : `https://joyasaravena.cl/${producto.imagen.replace(/^\//, '')}`;
+    : `https://ammirastore.cl/${producto.imagen.replace(/^\//, '')}`;
   const msgWsp = encodeURIComponent(
     `Hola! Me interesa el *${producto.nombre}* (${precioTexto}). ¿Tiene disponibilidad?\n\n📸 ${imagenUrl}`
   );

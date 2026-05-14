@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   PANEL DE ADMINISTRACIÓN — Joyería Aravena
+   PANEL DE ADMINISTRACIÓN — Ammira Store
    ═══════════════════════════════════════════════════════════ */
 
 // Emails con permisos de admin
@@ -1012,7 +1012,7 @@ function recalcular() {
 
   // Mensaje WhatsApp
   const msg =
-`*Cotización mayorista — Joyería Aravena*
+`*Cotización mayorista — Ammira Store*
 
 📦 ${calcProductoActivo.nombre}
    Categoría: ${calcProductoActivo.categoria}

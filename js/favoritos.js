@@ -1,5 +1,5 @@
 /* =============================================
-   FAVORITOS — Joyería Aravena
+   FAVORITOS — Ammira Store
    ============================================= */
 
 let favoritosSet = new Set();   // IDs de productos favoritos del usuario

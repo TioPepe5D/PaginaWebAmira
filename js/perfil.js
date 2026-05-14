@@ -1,5 +1,5 @@
 /* =============================================
-   PERFIL — Joyería Aravena
+   PERFIL — Ammira Store
    ============================================= */
 
 const REGIONES_CL = [

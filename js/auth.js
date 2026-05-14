@@ -1,5 +1,5 @@
 /* =============================================
-   AUTH — Joyería Aravena
+   AUTH — Ammira Store
    Login, Registro, Panel de usuario
    ============================================= */
 

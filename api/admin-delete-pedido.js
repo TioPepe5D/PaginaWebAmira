@@ -2,8 +2,8 @@ const { createClient } = require('@supabase/supabase-js');
 
 const ADMIN_EMAILS = ['Valentina.belen1905@gmail.com'];
 
-const SUPA_URL     = 'https://qcaxddxxmrwfihnyepbo.supabase.co';
-const SUPA_ANON    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjYXhkZHh4bXJ3ZmlobnllcGJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MzE5NDgsImV4cCI6MjA5MjQwNzk0OH0.0WtrOUK3_SDCkpVBTPg_aMz8rUk1sJ_ms6Ak5p5Xi08';
+const SUPA_URL     = 'https://jgtavepljzcwwagdihgx.supabase.co';
+const SUPA_ANON    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpndGF2ZXBsanpjd3dhZ2RpaGd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MDMwOTcsImV4cCI6MjA5MzE3OTA5N30.wi2-xPIXWYKrxI5LBwGCkuNaAYybqnCLshwsUBe_PEk';
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: 'Service key no configurada' });
   }
 
-  const supabaseAdmin = createClient(SUPA_URL, serviceKey);
+  const supabaseAdmin = createClient(process.env.SUPABASE_URL || SUPA_URL, serviceKey);
 
   const { error } = await supabaseAdmin
     .from('pedidos')

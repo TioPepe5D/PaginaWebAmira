@@ -1,5 +1,5 @@
 /* =============================================
-   PRESENCIA EN TIEMPO REAL — Joyería Aravena
+   PRESENCIA EN TIEMPO REAL — Ammira Store
    Registra visitantes activos en Supabase para
    mostrarlos en el panel de admin.
    ============================================= */

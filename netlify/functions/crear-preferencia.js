@@ -37,7 +37,7 @@ exports.handler = async (event) => {
           pending: `${siteUrl}/carrito.html?pago=pendiente`
         },
         auto_return: "approved",
-        statement_descriptor: "Joyería Aravena",
+        statement_descriptor: "Ammira Store",
         // ID del pedido → MP lo incluye en el webhook para que sepamos cuál actualizar
         external_reference: pedidoId || "",
         // URL que MP llama automáticamente cuando el pago cambia de estado

@@ -46,7 +46,7 @@ function renderizarProducto() {
     return;
   }
 
-  document.title = `${producto.nombre} — Joyería Aravena`;
+  document.title = `${producto.nombre} — Ammira Store`;
 
   contenedor.innerHTML = `
     <p class="producto-breadcrumb">
