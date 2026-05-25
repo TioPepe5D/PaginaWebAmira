@@ -15,3 +15,14 @@ try {
 } catch (e) {
   console.error('[Auth] Error al inicializar Supabase:', e);
 }
+
+// Cargar imágenes override desde Supabase
+window.imagenesOverride = {};
+async function cargarImagenesOverride() {
+  if (!db) return;
+  try {
+    const { data } = await db.from('imagen_override').select('product_id, url');
+    if (data) data.forEach(r => { window.imagenesOverride[r.product_id] = r.url; });
+  } catch (_) {}
+}
+cargarImagenesOverride();
