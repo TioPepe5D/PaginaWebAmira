@@ -1,9 +1,7 @@
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 const { createClient } = require("@supabase/supabase-js");
-const productos = require("../js/products.js");
 
-// Catálogo de precios en el servidor — el cliente no puede modificarlo
-const porId = new Map(productos.map(p => [String(p.id), p]));
+const SUPA_URL = 'https://jgtavepljzcwwagdihgx.supabase.co';
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -16,10 +14,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: "Items inválidos" });
   }
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-  );
+  const supabase = createClient(SUPA_URL, process.env.SUPABASE_SERVICE_KEY);
 
   // Autenticación opcional (soporta invitados)
   let userId = null;
@@ -29,6 +24,29 @@ module.exports = async (req, res) => {
       const { data } = await supabase.auth.getUser(token);
       if (data?.user) userId = data.user.id;
     } catch (_) {}
+  }
+
+  // Cargar catálogo desde Supabase para validar precios server-side
+  const ids = itemsInput.map(it => String(it.id));
+  const { data: catalogoRows, error: catalogoErr } = await supabase
+    .from('catalogo')
+    .select('id, nombre, precio, imagen_url, activo')
+    .in('id', ids)
+    .eq('activo', true);
+
+  // Fallback: leer products.js estático si Supabase no tiene el catálogo aún
+  let porId;
+  if (!catalogoErr && catalogoRows && catalogoRows.length > 0) {
+    porId = new Map(catalogoRows.map(p => [String(p.id), {
+      id: p.id, nombre: p.nombre, precio: p.precio, imagen: p.imagen_url
+    }]));
+  } else {
+    try {
+      const productosEstaticos = require("../js/products.js");
+      porId = new Map(productosEstaticos.map(p => [String(p.id), p]));
+    } catch (_) {
+      porId = new Map();
+    }
   }
 
   // ── Validar precios SERVER-SIDE contra el catálogo real ──
@@ -46,7 +64,7 @@ module.exports = async (req, res) => {
       id:       String(p.id),
       nombre:   p.nombre,
       cantidad: qty,
-      precio:   Number(p.precio),   // ← precio real del servidor
+      precio:   Number(p.precio),
       imagen:   p.imagen || ""
     });
   }
@@ -57,7 +75,7 @@ module.exports = async (req, res) => {
 
   // ── Guardar pedido con total verificado ──
   const payload = { items: itemsValidados, total, estado: "pendiente" };
-  if (userId)    payload.user_id    = userId;
+  if (userId)     payload.user_id     = userId;
   if (datosEnvio) payload.datos_envio = datosEnvio;
 
   const { data: pedido, error: pedidoErr } = await supabase
@@ -71,9 +89,6 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: "No se pudo crear el pedido" });
   }
 
-  // ── Crear preferencia en MercadoPago con precios reales ──
-  // SITE_URL debe ser el dominio estable de producción (ej: https://ammirastore.cl)
-  // VERCEL_URL cambia con cada deploy y rompe el webhook → solo usar como último recurso
   const siteUrl = process.env.SITE_URL
     || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null)
     || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null);
@@ -84,19 +99,19 @@ module.exports = async (req, res) => {
   }
 
   const mpItems = itemsValidados.map(i => ({
-    id:         i.id,
-    title:      i.nombre,
-    quantity:   i.cantidad,
-    unit_price: i.precio,
+    id:          i.id,
+    title:       i.nombre,
+    quantity:    i.cantidad,
+    unit_price:  i.precio,
     currency_id: "CLP"
   }));
 
   if (comision > 0) {
     mpItems.push({
-      id:         "comision-bancaria",
-      title:      "Comisión Bancaria",
-      quantity:   1,
-      unit_price: comision,
+      id:          "comision-bancaria",
+      title:       "Comisión Bancaria",
+      quantity:    1,
+      unit_price:  comision,
       currency_id: "CLP"
     });
   }
